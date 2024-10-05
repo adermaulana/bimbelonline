@@ -1,3 +1,19 @@
+<?php
+
+include '../koneksi.php';
+
+session_start();
+
+if($_SESSION['status'] != 'login'){
+
+    session_unset();
+    session_destroy();
+
+    header("location:../");
+
+}
+
+?>
 <!doctype html>
 <html lang="en">
 

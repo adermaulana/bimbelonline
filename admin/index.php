@@ -79,7 +79,7 @@ if($_SESSION['status'] != 'login'){
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="kelas.php"
+                href="#"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
@@ -91,7 +91,7 @@ if($_SESSION['status'] != 'login'){
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link success-hover-bg"
-                href="pembayaran.php"
+                href="#"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-success rounded-3">
@@ -103,7 +103,7 @@ if($_SESSION['status'] != 'login'){
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link primary-hover-bg"
-                href="sistem.php"
+                href="#"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-primary rounded-3">

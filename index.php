@@ -4,10 +4,21 @@
 
     session_start();
 
-    if(isset($_SESSION['status']) == 'login'){
+    if (isset($_SESSION['status']) && $_SESSION['status'] == 'login') {
 
-        header("location:admin");
-    }
+      if ($_SESSION['role_admin'] == 'admin') {
+          header("location:admin");
+          exit();
+      } else if ($_SESSION['role_admin'] == 'pengajar') {
+          header("location:pengajar");
+          exit();
+      } else {
+          header("location:siswa");
+          exit();
+      }
+  
+  }
+  
 
     if (isset($_POST['login'])) {
         $email = $_POST['email'];
@@ -16,8 +27,23 @@
         $login = mysqli_query($koneksi, "SELECT * FROM `users_221047`
                                     WHERE `email_221047` = '$email'
                                     AND `password_221047` = '$password'
+                                    AND `role_221047` = 'admin'
                                     AND `status_221047` = 'active'");
         $cek = mysqli_num_rows($login);
+
+        $loginPengajar = mysqli_query($koneksi, "SELECT * FROM `users_221047`
+                                    WHERE `email_221047` = '$email'
+                                    AND `password_221047` = '$password'
+                                    AND `role_221047` = 'pengajar'
+                                    AND `status_221047` = 'active'");
+        $cekPengajar = mysqli_num_rows($loginPengajar);
+
+        $loginSiswa = mysqli_query($koneksi, "SELECT * FROM `users_221047`
+                                    WHERE `email_221047` = '$email'
+                                    AND `password_221047` = '$password'
+                                    AND `role_221047` = 'siswa'
+                                    AND `status_221047` = 'active'");
+        $cekSiswa = mysqli_num_rows($loginSiswa);
     
         if ($cek > 0) {
             // Ambil data user
@@ -26,10 +52,34 @@
             $_SESSION['id_admin'] = $admin_data['id_221047']; // Pastikan sesuai dengan nama kolom di database
             $_SESSION['nama_admin'] = $admin_data['name_221047']; // Pastikan sesuai dengan nama kolom di database
             $_SESSION['email_admin'] = $email;
+            $_SESSION['role_admin'] = $admin_data['role_221047'];
             $_SESSION['status'] = "login";
             // Redirect ke halaman admin
             header('location:admin');
-        } else {
+
+        } else if ($cekPengajar > 0) {
+          // Ambil data user
+          $admin_data = mysqli_fetch_assoc($loginPengajar);
+          // Simpan data ke dalam session
+          $_SESSION['id_admin'] = $admin_data['id_221047']; // Pastikan sesuai dengan nama kolom di database
+          $_SESSION['nama_admin'] = $admin_data['name_221047']; // Pastikan sesuai dengan nama kolom di database
+          $_SESSION['email_admin'] = $email;
+          $_SESSION['role_admin'] = $admin_data['role_221047'];
+          $_SESSION['status'] = "login";
+          // Redirect ke halaman admin
+          header('location:pengajar');
+      } else if ($cekSiswa > 0) {
+        // Ambil data user
+        $admin_data = mysqli_fetch_assoc($loginSiswa);
+        // Simpan data ke dalam session
+        $_SESSION['id_admin'] = $admin_data['id_221047']; // Pastikan sesuai dengan nama kolom di database
+        $_SESSION['nama_admin'] = $admin_data['name_221047']; // Pastikan sesuai dengan nama kolom di database
+        $_SESSION['email_admin'] = $email;
+        $_SESSION['role_admin'] = $admin_data['role_221047'];
+        $_SESSION['status'] = "login";
+        // Redirect ke halaman admin
+        header('location:siswa');
+    }  else {
             echo "<script>
                 alert('Login Gagal, Periksa Username dan Password Anda!');
                 window.location.href = 'index.php';

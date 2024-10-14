@@ -13,24 +13,20 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-
-if ($_SESSION['role_admin'] != 'admin') {
+if ($_SESSION['role_admin'] != 'pengajar') {
  
-  header("location:../");
-  exit();
-  
-}
-
+    header("location:../");
+    exit();
+  }
 
 ?>
-
 <!doctype html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dahsboard Admin</title>
+  <title>Dashboard Pengajar</title>
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
 </head>

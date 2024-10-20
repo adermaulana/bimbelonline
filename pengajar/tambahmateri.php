@@ -94,7 +94,7 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                 <span class="hide-menu ms-2 ps-1">Data Materi</span>
               </a>
             </li>
-            <li class="sidebar-item">
+            <!-- <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link success-hover-bg"
                 href="ujian.php"
@@ -105,7 +105,7 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                 </span>
                 <span class="hide-menu ms-2 ps-1">Data Ujian</span>
               </a>
-            </li>
+            </li> -->
 
           </ul>
 

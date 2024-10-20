@@ -118,8 +118,20 @@
                 <p class="text-center">Your Social Campaigns</p>
                 <form method="POST">
                   <div class="mb-3">
+                    <label for="email" class="form-label">Username</label>
+                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+                  </div>
+                  <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Telepon</label>
+                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Alamat</label>
+                    <textarea class="form-control" name="" id="" rows="4"></textarea>
                   </div>
                   <div class="mb-4">
                     <label for="password" class="form-label">Password</label>

@@ -41,7 +41,7 @@ if ($_SESSION['role_admin'] != 'siswa') {
       <div class="scroll-sidebar" data-simplebar>
         <div class="d-flex mb-4 align-items-center justify-content-between">
             <a href="index.php" class="text-nowrap logo-img ms-0 ms-md-1">
-              <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+              <img src="" width="180" alt="">
             </a>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
               <i class="ti ti-x fs-8"></i>

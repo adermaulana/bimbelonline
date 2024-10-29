@@ -13,11 +13,53 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if ($_SESSION['role_admin'] != 'siswa') {
- 
-    header("location:../");
-    exit();
-  }
+if(isset($_GET['hal'])){
+    if($_GET['hal'] == "edit"){
+        $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047 WHERE id_221047 = '$_GET[id]'");
+        $data = mysqli_fetch_array($tampil);
+        if($data){
+            $id = $data['id_221047'];
+            $kelas = $data['judul_221047'];
+            $pengajar_id = $data['pengajar_id_221047'];
+            $kuota = $data['kuota_221047'];
+            $jadwal_mulai = $data['jadwal_mulai_221047'];
+            $jadwal_selesai = $data['jadwal_selesai_221047'];
+            $status = $data['status_221047'];
+        }
+    }
+}
+
+if (isset($_POST['simpan'])) {
+    // Ambil data dari form
+    $kelas = $_POST['judul_221047']; // Mengambil nama kelas
+    $pengajar_id = $_POST['pengajar_id_221047']; // Mengambil ID pengajar
+    $kuota = $_POST['kuota_221047']; // Mengambil kuota
+    $jadwal_mulai = $_POST['jadwal_mulai_221047']; // Mengambil jadwal mulai
+    $jadwal_selesai = $_POST['jadwal_selesai_221047']; // Mengambil jadwal selesai
+    $status = $_POST['status_221047']; // Mengambil status
+
+    // Lakukan query untuk memperbarui data di database
+    $update = mysqli_query($koneksi, "UPDATE kelas_221047 SET 
+        judul_221047 = '$kelas', 
+        pengajar_id_221047 = '$pengajar_id', 
+        kuota_221047 = '$kuota', 
+        jadwal_mulai_221047 = '$jadwal_mulai', 
+        jadwal_selesai_221047 = '$jadwal_selesai', 
+        status_221047 = '$status' 
+        WHERE id_221047 = '$_GET[id]'");
+
+    if ($update) {
+        echo "<script>
+                alert('Update data sukses!');
+                document.location='kelas.php';
+              </script>";
+    } else {
+        echo "<script>
+                alert('Update data Gagal!');
+                document.location='kelas.php';
+              </script>";
+    }
+}
 
 ?>
 <!doctype html>
@@ -26,7 +68,7 @@ if ($_SESSION['role_admin'] != 'siswa') {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard Siswa</title>
+  <title>Dahsboard Admin</title>
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
 </head>
@@ -73,39 +115,51 @@ if ($_SESSION['role_admin'] != 'siswa') {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link warning-hover-bg"
-                href="kelas.php"
+                href="user.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-warning rounded-3">
                   <i class="ti ti-article fs-7 text-warning"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Kelas</span>
+                <span class="hide-menu ms-2 ps-1">Data User</span>
               </a>
             </li>
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="materi.php"
+                href="kelas.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Materi</span>
+                <span class="hide-menu ms-2 ps-1">Data Kelas</span>
               </a>
             </li>
-            <!-- <li class="sidebar-item">
+            <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link success-hover-bg"
-                href="ujian.php"
+                href="pembayaran.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-success rounded-3">
                   <i class="ti ti-cards fs-7 text-success"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Ujian</span>
+                <span class="hide-menu ms-2 ps-1">Data Pembayaran</span>
               </a>
-            </li> -->
+            </li>
+            <li class="sidebar-item">
+              <a
+                class="sidebar-link sidebar-link primary-hover-bg"
+                href="sistem.php"
+                aria-expanded="false"
+              >
+                <span class="aside-icon p-2 bg-light-primary rounded-3">
+                  <i class="ti ti-file-description fs-7 text-primary"></i>
+                </span>
+                <span class="hide-menu ms-2 ps-1">Sistem Aplikasi</span>
+              </a>
+            </li>
 
           </ul>
 
@@ -167,60 +221,51 @@ if ($_SESSION['role_admin'] != 'siswa') {
         <div class="container-fluid">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Kelas</h5>
+              <h5 class="card-title fw-semibold mb-4">Edit Kelas</h5>
               <div class="card">
-              <div class="table-responsive" data-simplebar>
-                  <table
-                    class="table table-borderless align-middle text-nowrap"
-                  >
-                    <thead>
-                      <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Nama Kelas</th>
-                        <th scope="col">Pengajar</th>
-                        <th scope="col">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                            $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM transaksi_221047");
+                <div class="card-body col-6">
+                  <form method="POST">
+                    <div class="mb-3">
+                      <label for="judul_221047" class="form-label">Nama Kelas</label>
+                      <input type="text" class="form-control" id="judul_221047" value="<?= $kelas ?>" name="judul_221047" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role_221047" class="form-label">Nama Pengajar</label>
+                        <select class="form-select" id="pengajar_id_221047" name="pengajar_id_221047" required>
+                            <option disabled>Pilih Pengajar</option>
+                            <?php
+                            $tampil = mysqli_query($koneksi, "SELECT * FROM users_221047 WHERE role_221047 = 'pengajar'");
                             while($data = mysqli_fetch_array($tampil)):
-                        ?>
-                      <tr>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0"><?= $no++ ?></p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['name_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['role_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Hapus</a>
-                        </td>
-                      </tr>
-                      <?php
-                            endwhile; 
-                        ?>
-                    </tbody>
-                  </table>
+                                // Cek apakah ID pengajar sama dengan pengajar_id yang dipilih
+                                $selected = ($data['id_221047'] == $pengajar_id) ? 'selected' : '';
+                            ?>
+                            <option value="<?= $data['id_221047'] ?>" <?= $selected ?>><?= $data['name_221047'] ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="kuota_221047" class="form-label">Kuota</label>
+                      <input type="number" class="form-control" id="kuota_221047" value="<?= $kuota ?>" name="kuota_221047" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="phone_221047" class="form-label">Jadwal Mulai</label>
+                      <input type="date" class="form-control" id="jadwal_mulai_221047" value="<?= $jadwal_mulai ?>" name="jadwal_mulai_221047" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="phone_221047" class="form-label">Jadwal Selesai</label>
+                      <input type="date" class="form-control" id="jadwal_selesai_221047" value="<?= $jadwal_selesai ?>" name="jadwal_selesai_221047" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status_221047" class="form-label">Status</label>
+                        <select class="form-select" id="status_221047" name="status_221047" required>
+                            <option value="" disabled>Pilih Status</option>
+                            <option value="Aktif" <?= ($status == "Aktif") ? 'selected' : '' ?>>Aktif</option>
+                            <option value="Nonaktif" <?= ($status == "Nonaktif") ? 'selected' : '' ?>>Nonaktif</option>
+                            <!-- Tambahkan opsi lain sesuai kebutuhan -->
+                        </select>
+                    </div>
+                    <button type="submit" name="simpan" class="btn btn-primary">Edit</button>
+                  </form>
                 </div>
               </div>
             </div>

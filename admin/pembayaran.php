@@ -13,36 +13,7 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if (isset($_POST['simpan'])) {
-    // Check if email already exists
-    $email = $_POST['email_221047'];
-    $checkEmail = mysqli_query($koneksi, "SELECT * FROM users_221047 WHERE email_221047='$email'");
 
-    if (mysqli_num_rows($checkEmail) > 0) {
-        echo "<script>
-                alert('Email sudah terdaftar!');
-                document.location='tambahuser.php';
-              </script>";
-    } else {
-        // Hash the password using md5
-        $hashedPassword = md5($_POST['password_221047']);
-        
-        // Insert new user into the database
-        $simpan = mysqli_query($koneksi, "INSERT INTO users_221047 (name_221047, email_221047, phone_221047, role_221047, status_221047, password_221047) VALUES ('$_POST[name_221047]', '$email', '$_POST[phone_221047]', '$_POST[role_221047]', '$_POST[status_221047]', '$hashedPassword')");
-
-        if ($simpan) {
-            echo "<script>
-                    alert('Simpan data sukses!');
-                    document.location='user.php';
-                </script>";
-        } else {
-            echo "<script>
-                    alert('Simpan data Gagal!');
-                    document.location='user.php';
-                </script>";
-        }
-    }
-}
 ?>
 <!doctype html>
 <html lang="en">
@@ -221,7 +192,7 @@ if (isset($_POST['simpan'])) {
                     <tbody>
                     <?php
                             $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
+                            $tampil = mysqli_query($koneksi, "SELECT * FROM transaksi_221047");
                             while($data = mysqli_fetch_array($tampil)):
                         ?>
                       <tr>

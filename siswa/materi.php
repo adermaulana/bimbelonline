@@ -185,7 +185,7 @@ if ($_SESSION['role_admin'] != 'siswa') {
                     <tbody>
                     <?php
                             $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
+                            $tampil = mysqli_query($koneksi, "SELECT * FROM transaksi_221047");
                             while($data = mysqli_fetch_array($tampil)):
                         ?>
                       <tr>

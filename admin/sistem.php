@@ -13,6 +13,85 @@ if($_SESSION['status'] != 'login'){
 
 }
 
+$id = 4;
+
+$cek = mysqli_query($koneksi, "SELECT * FROM sistem WHERE id = '$id'");
+$data = mysqli_fetch_array($cek);
+if($data){
+    $logo = $data['logo'];
+    $nama = $data['nama'];
+}
+
+if (isset($_POST['simpan'])) {
+  // Folder penyimpanan gambar
+  $target_dir = "uploads/";
+  $logo = $_FILES['logo']['name'];
+  $target_file = $target_dir . basename($logo);
+  $uploadOk = 1;
+
+  // Mendapatkan tipe file untuk memastikan hanya file gambar yang diupload
+  $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+  // Validasi: hanya izinkan format file tertentu
+  $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+  if (!in_array($imageFileType, $allowed_types)) {
+      echo "<script>alert('Hanya file gambar JPG, JPEG, PNG & GIF yang diperbolehkan.');</script>";
+      $uploadOk = 0;
+  }
+
+  // Proses upload file jika lolos validasi
+  if ($uploadOk && move_uploaded_file($_FILES["logo"]["tmp_name"], $target_file)) {
+      // File berhasil diupload, ambil data dari form
+      $id = 4;
+      $nama = $_POST['nama'];
+      // Cek apakah data dengan nama ini sudah ada di database
+      $cek = mysqli_query($koneksi, "SELECT * FROM sistem WHERE id = '$id'");
+      $data = mysqli_fetch_array($cek);
+      if($data){
+          $logo = $data['logo'];
+          $nama = $data['nama'];
+      }
+      if (mysqli_num_rows($cek) > 0) {
+          // Jika data sudah ada, update
+
+          
+
+          $update = mysqli_query($koneksi, "UPDATE sistem SET logo = '$target_file',nama = '$nama' WHERE id = '$id'");
+          if ($update) {
+              echo "<script>
+                      alert('Data dan logo berhasil diperbarui!');
+                      document.location='sistem.php';
+                    </script>";
+          } else {
+              echo "<script>
+                      alert('Gagal memperbarui data di database!');
+                      document.location='sistem.php';
+                    </script>";
+          }
+      } else {
+          // Jika data belum ada, insert
+          $simpan = mysqli_query($koneksi, "INSERT INTO sistem (nama, logo) VALUES ('$nama', '$target_file')");
+          if ($simpan) {
+              echo "<script>
+                      alert('Data dan logo berhasil disimpan!');
+                      document.location='sistem.php';
+                    </script>";
+          } else {
+              echo "<script>
+                      alert('Gagal menyimpan data ke database!');
+                      document.location='sistem.php';
+                    </script>";
+          }
+      }
+  } else {
+      echo "<script>
+              alert('Gagal mengupload logo!');
+              document.location='sistem.php';
+            </script>";
+  }
+}
+
+
 
 ?>
 <!doctype html>
@@ -174,17 +253,17 @@ if($_SESSION['status'] != 'login'){
         <div class="container-fluid">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Tambah User</h5>
+              <h5 class="card-title fw-semibold mb-4">Tambah Data</h5>
               <div class="card">
                 <div class="card-body col-6">
-                  <form method="POST">
+                  <form method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
-                      <label for="name_221047" class="form-label">Logo</label>
-                      <input type="file" class="form-control" id="name_221047" name="name_221047" required>
+                      <label for="logo" class="form-label">Logo</label>
+                      <input type="file" class="form-control" id="logo" value="<?= $logo ?>" name="logo" required>
                     </div>
                     <div class="mb-3">
-                      <label for="email_221047" class="form-label">Nama Perusahaan</label>
-                      <input type="text" class="form-control" id="email_221047" name="email_221047" required>
+                      <label for="nama" class="form-label">Nama Perusahaan</label>
+                      <input type="text" class="form-control" id="nama" value="<?= $nama ?>" name="nama" required>
                     </div>
                     <button type="submit" name="simpan" class="btn btn-primary">Tambah</button>
                   </form>

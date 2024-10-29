@@ -180,13 +180,18 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                       <textarea class="form-control" name="" id="" rows="4"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="role_221047" class="form-label">Kelas</label>
-                        <select class="form-select" id="role_221047" name="role_221047" required>
+                        <label for="kelas_id_221047" class="form-label">Kelas</label>
+                        <select class="form-select" id="kelas_id_221047" name="kelas_id_221047" required>
                             <option value="" disabled selected>Pilih Kelas</option>
-                            <option value="admin">Web Development</option>
-                            <option value="pengajar">Fullstack Developer</option>
-                            <option value="siswa">Backend Engineer</option>
-                            <!-- Tambahkan opsi lain sesuai kebutuhan -->
+                            <?php
+                              $no = 1;
+                              $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
+                              while($data = mysqli_fetch_array($tampil)):
+                            ?>
+                            <option value="<"><?= $data['judul_221047'] ?></option>
+                            <?php
+                              endwhile; 
+                            ?>
                         </select>
                     </div>
                     <div class="mb-3">

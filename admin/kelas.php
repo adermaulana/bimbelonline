@@ -13,36 +13,18 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if (isset($_POST['simpan'])) {
-    // Check if email already exists
-    $email = $_POST['email_221047'];
-    $checkEmail = mysqli_query($koneksi, "SELECT * FROM users_221047 WHERE email_221047='$email'");
+if(isset($_GET['hal']) == "hapus"){
 
-    if (mysqli_num_rows($checkEmail) > 0) {
-        echo "<script>
-                alert('Email sudah terdaftar!');
-                document.location='tambahuser.php';
-              </script>";
-    } else {
-        // Hash the password using md5
-        $hashedPassword = md5($_POST['password_221047']);
-        
-        // Insert new user into the database
-        $simpan = mysqli_query($koneksi, "INSERT INTO users_221047 (name_221047, email_221047, phone_221047, role_221047, status_221047, password_221047) VALUES ('$_POST[name_221047]', '$email', '$_POST[phone_221047]', '$_POST[role_221047]', '$_POST[status_221047]', '$hashedPassword')");
+  $hapus = mysqli_query($koneksi, "DELETE FROM kelas_221047 WHERE id_221047 = '$_GET[id]'");
 
-        if ($simpan) {
-            echo "<script>
-                    alert('Simpan data sukses!');
-                    document.location='user.php';
-                </script>";
-        } else {
-            echo "<script>
-                    alert('Simpan data Gagal!');
-                    document.location='user.php';
-                </script>";
-        }
-    }
+  if($hapus){
+      echo "<script>
+      alert('Hapus data sukses!');
+      document.location='kelas.php';
+      </script>";
+  }
 }
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -216,6 +198,8 @@ if (isset($_POST['simpan'])) {
                         <th scope="col">Nama Kelas</th>
                         <th scope="col">Nama Pengajar</th>
                         <th scope="col">Kuota</th>
+                        <th scope="col">Jadwal Mulai</th>
+                        <th scope="col">Jadwal Selesai</th>
                         <th scope="col">Status</th>
                         <th scope="col">Aksi</th>
                       </tr>
@@ -223,7 +207,14 @@ if (isset($_POST['simpan'])) {
                     <tbody>
                     <?php
                             $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
+                            $tampil = mysqli_query($koneksi, "SELECT 
+                                                                  kelas_221047.*,
+                                                                  users_221047.name_221047 AS nama_pengajar
+                                                              FROM 
+                                                                  kelas_221047
+                                                              JOIN 
+                                                                  users_221047 ON kelas_221047.pengajar_id_221047 = users_221047.id_221047;
+                                                              ");
                             while($data = mysqli_fetch_array($tampil)):
                         ?>
                       <tr>
@@ -232,12 +223,27 @@ if (isset($_POST['simpan'])) {
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['name_221047'] ?>
+                          <?= $data['judul_221047'] ?>
                           </p>
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['role_221047'] ?>
+                          <?= $data['nama_pengajar'] ?>
+                          </p>
+                        </td>
+                        <td>
+                          <p class="fs-3 fw-normal mb-0">
+                          <?= $data['kuota_221047'] ?>
+                          </p>
+                        </td>
+                        <td>
+                          <p class="fs-3 fw-normal mb-0">
+                          <?= $data['jadwal_mulai_221047'] ?>
+                          </p>
+                        </td>
+                        <td>
+                          <p class="fs-3 fw-normal mb-0">
+                          <?= $data['jadwal_selesai_221047'] ?>
                           </p>
                         </td>
                         <td>
@@ -246,13 +252,8 @@ if (isset($_POST['simpan'])) {
                           </p>
                         </td>
                         <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Hapus</a>
+                            <a class="btn btn-warning" href="editkelas.php?hal=edit&id=<?= $data['id_221047']?>">Edit</a>
+                            <a class="btn btn-danger" href="kelas.php?hal=hapus&id=<?= $data['id_221047']?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">Hapus</a>
                         </td>
                       </tr>
                       <?php

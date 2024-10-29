@@ -13,12 +13,57 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if ($_SESSION['role_admin'] != 'siswa') {
- 
-    header("location:../");
-    exit();
-  }
+if(isset($_GET['hal'])){
+    if($_GET['hal'] == "edit"){
+        $tampil = mysqli_query($koneksi, "SELECT * FROM users_221047 WHERE id_221047 = '$_GET[id]'");
+        $data = mysqli_fetch_array($tampil);
+        if($data){
+            $id = $data['id_221047'];
+            $nama = $data['name_221047'];
+            $email = $data['email_221047'];
+            $phone = $data['phone_221047'];
+            $role = $data['role_221047'];
+            $status = $data['status_221047'];
+        }
+    }
+}
 
+if (isset($_POST['simpan'])) {
+    // Ambil ID pengguna dari parameter GET
+    $id = $_GET['id']; // Pastikan untuk mengambil ID dari URL
+
+    // Ambil data dari form
+    $name = $_POST['name_221047'];
+    $email = $_POST['email_221047'];
+    $phone = $_POST['phone_221047'];
+    $role = $_POST['role_221047'];
+    $status = $_POST['status_221047'];
+
+    // Cek apakah email sudah terdaftar, kecuali untuk pengguna yang sama
+    $checkEmail = mysqli_query($koneksi, "SELECT * FROM users_221047 WHERE email_221047='$email' AND id_221047 != '$id'");
+
+    if (mysqli_num_rows($checkEmail) > 0) {
+        echo "<script>
+                alert('Email sudah terdaftar untuk pengguna lain!');
+                document.location='tambahuser.php?id=$id';
+              </script>";
+    } else {
+        // Update user data in the database
+        $update = mysqli_query($koneksi, "UPDATE users_221047 SET name_221047='$name', email_221047='$email', phone_221047='$phone', role_221047='$role', status_221047='$status' WHERE id_221047='$id'");
+
+        if ($update) {
+            echo "<script>
+                    alert('Update data sukses!');
+                    document.location='user.php';
+                </script>";
+        } else {
+            echo "<script>
+                    alert('Update data Gagal!');
+                    document.location='user.php';
+                </script>";
+        }
+    }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -26,7 +71,7 @@ if ($_SESSION['role_admin'] != 'siswa') {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard Siswa</title>
+  <title>Dahsboard Admin</title>
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
 </head>
@@ -73,39 +118,51 @@ if ($_SESSION['role_admin'] != 'siswa') {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link warning-hover-bg"
-                href="kelas.php"
+                href="user.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-warning rounded-3">
                   <i class="ti ti-article fs-7 text-warning"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Kelas</span>
+                <span class="hide-menu ms-2 ps-1">Data User</span>
               </a>
             </li>
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="materi.php"
+                href="kelas.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Materi</span>
+                <span class="hide-menu ms-2 ps-1">Data Kelas</span>
               </a>
             </li>
-            <!-- <li class="sidebar-item">
+            <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link success-hover-bg"
-                href="ujian.php"
+                href="pembayaran.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-success rounded-3">
                   <i class="ti ti-cards fs-7 text-success"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Ujian</span>
+                <span class="hide-menu ms-2 ps-1">Data Pembayaran</span>
               </a>
-            </li> -->
+            </li>
+            <li class="sidebar-item">
+              <a
+                class="sidebar-link sidebar-link primary-hover-bg"
+                href="sistem.php"
+                aria-expanded="false"
+              >
+                <span class="aside-icon p-2 bg-light-primary rounded-3">
+                  <i class="ti ti-file-description fs-7 text-primary"></i>
+                </span>
+                <span class="hide-menu ms-2 ps-1">Sistem Aplikasi</span>
+              </a>
+            </li>
 
           </ul>
 
@@ -167,60 +224,43 @@ if ($_SESSION['role_admin'] != 'siswa') {
         <div class="container-fluid">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Kelas</h5>
+              <h5 class="card-title fw-semibold mb-4">Edit User</h5>
               <div class="card">
-              <div class="table-responsive" data-simplebar>
-                  <table
-                    class="table table-borderless align-middle text-nowrap"
-                  >
-                    <thead>
-                      <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Nama Kelas</th>
-                        <th scope="col">Pengajar</th>
-                        <th scope="col">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                            $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM transaksi_221047");
-                            while($data = mysqli_fetch_array($tampil)):
-                        ?>
-                      <tr>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0"><?= $no++ ?></p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['name_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['role_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Hapus</a>
-                        </td>
-                      </tr>
-                      <?php
-                            endwhile; 
-                        ?>
-                    </tbody>
-                  </table>
+                <div class="card-body col-6">
+                  <form method="POST">
+                    <div class="mb-3">
+                      <label for="name_221047" class="form-label">Nama</label>
+                      <input type="text" class="form-control" id="name_221047" value="<?= $nama ?>" name="name_221047" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="email_221047" class="form-label">Email</label>
+                      <input type="email" class="form-control" id="email_221047" value="<?= $email ?>" name="email_221047" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="phone_221047" class="form-label">Telepon</label>
+                      <input type="text" class="form-control" id="phone_221047" value="<?= $phone ?>" name="phone_221047" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role_221047" class="form-label">Role</label>
+                        <select class="form-select" id="role_221047" name="role_221047" required>
+                            <option value="" disabled <?php echo $role ? '' : 'selected'; ?>>Pilih Role</option>
+                            <option value="admin" <?php echo $role === 'admin' ? 'selected' : ''; ?>>Admin</option>
+                            <option value="pengajar" <?php echo $role === 'pengajar' ? 'selected' : ''; ?>>Pengajar</option>
+                            <option value="siswa" <?php echo $role === 'siswa' ? 'selected' : ''; ?>>Siswa</option>
+                            <!-- Tambahkan opsi lain sesuai kebutuhan -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status_221047" class="form-label">Status</label>
+                        <select class="form-select" id="status_221047" name="status_221047" required>
+                            <option value="" disabled <?php echo $status ? '' : 'selected'; ?>>Pilih Status</option>
+                            <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Aktif</option>
+                            <option value="inactive" <?php echo $status === 'inactive' ? 'selected' : ''; ?>>Nonaktif</option>
+                            <!-- Tambahkan opsi lain sesuai kebutuhan -->
+                        </select>
+                    </div>
+                    <button type="submit" name="simpan" class="btn btn-primary">Edit</button>
+                  </form>
                 </div>
               </div>
             </div>

@@ -19,6 +19,19 @@ if ($_SESSION['role_admin'] != 'pengajar') {
     exit();
   }
 
+
+  if(isset($_GET['hal']) == "hapus"){
+
+    $hapus = mysqli_query($koneksi, "DELETE FROM materi_221047 WHERE id_221047 = '$_GET[id]'");
+  
+    if($hapus){
+        echo "<script>
+        alert('Hapus data sukses!');
+        document.location='materi.php';
+        </script>";
+    }
+  }
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -180,14 +193,17 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                         <th scope="col">Judul Materi</th>
                         <th scope="col">Kelas</th>
                         <th scope="col">Deskripsi</th>
-                        <th scope="col">Tipe</th>
+                        <th scope="col">File</th>
                         <th scope="col">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
                     <?php
                             $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
+                            $tampil = mysqli_query($koneksi, "SELECT m.*, k.judul_221047 as nama_kelas
+                                                              FROM materi_221047 m
+                                                              JOIN kelas_221047 k ON m.kelas_id_221047 = k.id_221047;
+                                                              ");
                             while($data = mysqli_fetch_array($tampil)):
                         ?>
                       <tr>
@@ -196,27 +212,27 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['name_221047'] ?>
+                          <?= $data['judul_221047'] ?>
                           </p>
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['role_221047'] ?>
+                          <?= $data['nama_kelas'] ?>
                           </p>
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
+                          <?= $data['deskripsi_221047'] ?>
                           </p>
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
+                          <?= $data['file_path_221047'] ?>
                           </p>
                         </td>
                         <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Hapus</a>
+                        <a class="btn btn-warning" href="editmateri.php?hal=edit&id=<?= $data['id_221047']?>">Edit</a>
+                        <a class="btn btn-danger" href="materi.php?hal=hapus&id=<?= $data['id_221047']?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">Hapus</a>
                         </td>
                       </tr>
                       <?php

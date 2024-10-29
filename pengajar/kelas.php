@@ -4,6 +4,8 @@ include '../koneksi.php';
 
 session_start();
 
+$id_pengajar = $_SESSION['id_admin'];
+
 if($_SESSION['status'] != 'login'){
 
     session_unset();
@@ -17,6 +19,18 @@ if ($_SESSION['role_admin'] != 'pengajar') {
  
     header("location:../");
     exit();
+  }
+
+  if(isset($_GET['hal']) == "hapus"){
+
+    $hapus = mysqli_query($koneksi, "DELETE FROM kelas_221047 WHERE id_221047 = '$_GET[id]'");
+  
+    if($hapus){
+        echo "<script>
+        alert('Hapus data sukses!');
+        document.location='kelas.php';
+        </script>";
+    }
   }
 
 ?>
@@ -179,6 +193,8 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                         <th scope="col">No</th>
                         <th scope="col">Nama Kelas</th>
                         <th scope="col">Kuota</th>
+                        <th scope="col">Jadwal Mulai</th>
+                        <th scope="col">Jadwal Selesai</th>
                         <th scope="col">Status</th>
                         <th scope="col">Aksi</th>
                       </tr>
@@ -186,7 +202,7 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                     <tbody>
                     <?php
                             $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
+                            $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047 WHERE pengajar_id_221047 = '$id_pengajar'");
                             while($data = mysqli_fetch_array($tampil)):
                         ?>
                       <tr>
@@ -195,12 +211,22 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['name_221047'] ?>
+                          <?= $data['judul_221047'] ?>
                           </p>
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['role_221047'] ?>
+                          <?= $data['kuota_221047'] ?>
+                          </p>
+                        </td>
+                        <td>
+                          <p class="fs-3 fw-normal mb-0">
+                          <?= $data['jadwal_mulai_221047'] ?>
+                          </p>
+                        </td>
+                        <td>
+                          <p class="fs-3 fw-normal mb-0">
+                          <?= $data['jadwal_selesai_221047'] ?>
                           </p>
                         </td>
                         <td>
@@ -209,13 +235,8 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                           </p>
                         </td>
                         <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Hapus</a>
+                            <a class="btn btn-warning" href="editkelas.php?hal=edit&id=<?= $data['id_221047']?>">Edit</a>
+                            <a class="btn btn-danger" href="kelas.php?hal=hapus&id=<?= $data['id_221047']?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">Hapus</a>
                         </td>
                       </tr>
                       <?php

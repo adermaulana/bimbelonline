@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 22, 2024 at 04:25 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Oct 29, 2024 at 02:07 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -48,10 +48,17 @@ CREATE TABLE `kelas_221047` (
   `judul_221047` varchar(255) NOT NULL,
   `deskripsi_221047` text DEFAULT NULL,
   `kuota_221047` int(11) DEFAULT 0,
-  `jadwal_mulai_221047` datetime DEFAULT NULL,
-  `jadwal_selesai_221047` datetime DEFAULT NULL,
-  `status_221047` enum('draft','published') DEFAULT 'draft'
+  `jadwal_mulai_221047` date DEFAULT NULL,
+  `jadwal_selesai_221047` date DEFAULT NULL,
+  `status_221047` enum('Aktif','Nonaktif') DEFAULT 'Aktif'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `kelas_221047`
+--
+
+INSERT INTO `kelas_221047` (`id_221047`, `pengajar_id_221047`, `judul_221047`, `deskripsi_221047`, `kuota_221047`, `jadwal_mulai_221047`, `jadwal_selesai_221047`, `status_221047`) VALUES
+(4, 3, 'Kelas', NULL, 30, '2000-12-12', '2001-02-01', 'Aktif');
 
 -- --------------------------------------------------------
 
@@ -65,7 +72,7 @@ CREATE TABLE `materi_221047` (
   `judul_221047` varchar(255) NOT NULL,
   `deskripsi_221047` text DEFAULT NULL,
   `file_path_221047` varchar(255) DEFAULT NULL,
-  `type_221047` enum('pdf','video','text') NOT NULL
+  `type_221047` enum('pdf','video','text') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -102,9 +109,17 @@ CREATE TABLE `sertifikat_221047` (
 --
 
 CREATE TABLE `sistem` (
+  `id` int(11) NOT NULL,
   `logo` varchar(255) NOT NULL,
   `nama` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sistem`
+--
+
+INSERT INTO `sistem` (`id`, `logo`, `nama`) VALUES
+(4, 'uploads/Screenshot (2).png', 'sfsfsfsfs');
 
 -- --------------------------------------------------------
 
@@ -177,7 +192,6 @@ CREATE TABLE `users_221047` (
 
 INSERT INTO `users_221047` (`id_221047`, `name_221047`, `email_221047`, `password_221047`, `role_221047`, `phone_221047`, `status_221047`) VALUES
 (1, 'admin', 'admin@gmail.com', '21232f297a57a5a743894a0e4a801fc3', 'admin', '0853', 'active'),
-(2, 'Tes', 'tes@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 'admin', '0430430', 'active'),
 (3, 'Pengajar', 'pengajar@gmail.com', '696ed7534349804cf5050ae88bc994ba', 'pengajar', '09432', 'active'),
 (4, 'Siswa', 'siswa@gmail.com', 'bcd724d15cde8c47650fda962968f102', 'siswa', '20230', 'active');
 
@@ -222,6 +236,12 @@ ALTER TABLE `sertifikat_221047`
   ADD KEY `kelas_id_221047` (`kelas_id_221047`);
 
 --
+-- Indexes for table `sistem`
+--
+ALTER TABLE `sistem`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `soal_ujian_221047`
 --
 ALTER TABLE `soal_ujian_221047`
@@ -264,13 +284,13 @@ ALTER TABLE `jawaban_siswa_221047`
 -- AUTO_INCREMENT for table `kelas_221047`
 --
 ALTER TABLE `kelas_221047`
-  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `materi_221047`
 --
 ALTER TABLE `materi_221047`
-  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `paket_221047`
@@ -283,6 +303,12 @@ ALTER TABLE `paket_221047`
 --
 ALTER TABLE `sertifikat_221047`
   MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sistem`
+--
+ALTER TABLE `sistem`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `soal_ujian_221047`

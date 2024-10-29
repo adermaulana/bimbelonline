@@ -13,11 +13,106 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if ($_SESSION['role_admin'] != 'siswa') {
+if ($_SESSION['role_admin'] != 'pengajar') {
  
     header("location:../");
     exit();
   }
+
+
+  if(isset($_GET['hal'])){
+    if($_GET['hal'] == "edit"){
+        $tampil = mysqli_query($koneksi, "SELECT * FROM materi_221047 WHERE id_221047 = '$_GET[id]'");
+        $data = mysqli_fetch_array($tampil);
+        if($data){
+            $id = $data['id_221047'];
+            $kelas = $data['judul_221047'];
+            $kelas_id = $data['kelas_id_221047'];
+            $file = $data['file_path_221047'];
+            $deskripsi = $data['deskripsi_221047'];
+        }
+    }
+}
+
+if (isset($_POST['simpan'])) {
+    // Ambil data dari form
+    $id = $_GET['id']; // Ambil ID dari URL untuk pengeditan
+    $judul = $_POST['name_221047']; // Mengambil judul materi
+    $kelas_id = $_POST['kelas_id_221047']; // Mengambil ID kelas
+    $deskripsi = $_POST['deskripsi_221047']; // Mengambil deskripsi
+
+    // Variabel untuk menyimpan path file yang akan diupdate
+    $filePathLama = ''; 
+
+    // Ambil data file lama dari database
+    $query = mysqli_query($koneksi, "SELECT file_path_221047 FROM materi_221047 WHERE id_221047='$id'");
+    if ($query) {
+        $data = mysqli_fetch_assoc($query);
+        $filePathLama = $data['file_path_221047'];
+    }
+
+    // Proses upload file
+    $uploadOk = 1;
+
+    // Cek jika ada file baru diupload
+    if ($_FILES["file_path_221047"]["name"]) {
+        $target_dir = "uploads/"; // Tentukan direktori penyimpanan
+        $target_file = $target_dir . basename($_FILES["file_path_221047"]["name"]);
+        $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+        // Hanya izinkan format file PDF
+        if ($fileType != "pdf") {
+            echo "<script>alert('Maaf, hanya file PDF yang diizinkan.');</script>";
+            $uploadOk = 0;
+        }
+
+        // Cek apakah file sudah ada
+        if (file_exists($target_file)) {
+            echo "<script>alert('Maaf, file sudah ada.');</script>";
+            $uploadOk = 0;
+        }
+
+        // Batasi ukuran file (misalnya, maksimal 5MB)
+        if ($_FILES["file_path_221047"]["size"] > 5000000) { // 5MB
+            echo "<script>alert('Maaf, ukuran file terlalu besar.');</script>";
+            $uploadOk = 0;
+        }
+
+        // Cek apakah $uploadOk di-set ke 0 oleh kesalahan
+        if ($uploadOk == 0) {
+            echo "<script>alert('Maaf, file tidak dapat diupload.');</script>";
+        } else {
+            // Jika semua ok, coba untuk upload file
+            if (move_uploaded_file($_FILES["file_path_221047"]["tmp_name"], $target_file)) {
+                // Jika berhasil upload file baru, update path file di database
+                $filePathLama = $target_file; // Ganti dengan file baru
+            } else {
+                echo "<script>alert('Maaf, terjadi kesalahan saat mengupload file.');</script>";
+            }
+        }
+    } else {
+        // Jika tidak ada file baru, gunakan file lama
+        $filePathLama = $filePathLama; // Tidak ada perubahan
+    }
+
+    // Lakukan query untuk menyimpan data ke database
+    $simpan = mysqli_query($koneksi, "UPDATE materi_221047 SET judul_221047='$judul', kelas_id_221047='$kelas_id', file_path_221047='$filePathLama', deskripsi_221047='$deskripsi' WHERE id_221047='$id'");
+
+    if ($simpan) {
+        echo "<script>
+                alert('Update data sukses!');
+                document.location='materi.php';
+              </script>";
+    } else {
+        echo "<script>
+                alert('Update data Gagal!');
+                document.location='materi.php';
+              </script>";
+    }
+}
+
+
+
 
 ?>
 <!doctype html>
@@ -26,7 +121,7 @@ if ($_SESSION['role_admin'] != 'siswa') {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard Siswa</title>
+  <title>Dashboard Pengajar</title>
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
 </head>
@@ -167,60 +262,43 @@ if ($_SESSION['role_admin'] != 'siswa') {
         <div class="container-fluid">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Kelas</h5>
+              <h5 class="card-title fw-semibold mb-4">Tambah Materi</h5>
               <div class="card">
-              <div class="table-responsive" data-simplebar>
-                  <table
-                    class="table table-borderless align-middle text-nowrap"
-                  >
-                    <thead>
-                      <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Nama Kelas</th>
-                        <th scope="col">Pengajar</th>
-                        <th scope="col">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                            $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM transaksi_221047");
-                            while($data = mysqli_fetch_array($tampil)):
-                        ?>
-                      <tr>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0"><?= $no++ ?></p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['name_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['role_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Hapus</a>
-                        </td>
-                      </tr>
-                      <?php
-                            endwhile; 
-                        ?>
-                    </tbody>
-                  </table>
+                <div class="card-body col-6">
+                  <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                      <label for="name_221047" class="form-label">Judul Materi</label>
+                      <input type="text" class="form-control" id="name_221047" value="<?= $kelas ?>" name="name_221047" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="kelas_id_221047" class="form-label">Kelas</label>
+                        <select class="form-select" id="kelas_id_221047" name="kelas_id_221047" required>
+                            <option value="" disabled>Pilih Kelas</option>
+                            <?php
+                            $tampil_kelas = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
+                            while ($kelas = mysqli_fetch_array($tampil_kelas)):
+                                // Menandai kelas yang dipilih
+                                $selected = ($kelas['id_221047'] == $kelas_id) ? 'selected' : '';
+                            ?>
+                            <option value="<?= $kelas['id_221047'] ?>" <?= $selected ?>><?= $kelas['judul_221047'] ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="file_path_221047" class="form-label">File</label>
+                        <input type="file" class="form-control" id="file_path_221047" name="file_path_221047">
+                        <!-- Tampilkan nama file saat ini jika ada -->
+                        <?php if (!empty($file)): ?>
+                            <small class="text-muted">File saat ini: <?= basename($file) ?></small>
+                        <?php endif; ?>
+                    </div>
+                    <div class="mb-3">
+                      <label for="deskripsi_221047" class="form-label">Deskripsi</label>
+                      <textarea class="form-control" name="deskripsi_221047" name="" id="" rows="4"><?= $deskripsi ?></textarea>
+                    </div>
+
+                    <button type="submit" name="simpan" class="btn btn-primary">Edit</button>
+                  </form>
                 </div>
               </div>
             </div>

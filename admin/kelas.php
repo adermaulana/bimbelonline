@@ -197,9 +197,7 @@ if(isset($_GET['hal']) == "hapus"){
                         <th scope="col">No</th>
                         <th scope="col">Nama Kelas</th>
                         <th scope="col">Nama Pengajar</th>
-                        <th scope="col">Kuota</th>
-                        <th scope="col">Jadwal Mulai</th>
-                        <th scope="col">Jadwal Selesai</th>
+                        <th scope="col">Harga</th>
                         <th scope="col">Status</th>
                         <th scope="col">Aksi</th>
                       </tr>
@@ -209,11 +207,11 @@ if(isset($_GET['hal']) == "hapus"){
                             $no = 1;
                             $tampil = mysqli_query($koneksi, "SELECT 
                                                                   kelas_221047.*,
-                                                                  users_221047.name_221047 AS nama_pengajar
+                                                                  users_221047.nama_lengkap_221047 AS nama_pengajar
                                                               FROM 
                                                                   kelas_221047
                                                               JOIN 
-                                                                  users_221047 ON kelas_221047.pengajar_id_221047 = users_221047.id_221047;
+                                                                  users_221047 ON kelas_221047.id_pengajar_221047 = users_221047.id_221047;
                                                               ");
                             while($data = mysqli_fetch_array($tampil)):
                         ?>
@@ -223,7 +221,7 @@ if(isset($_GET['hal']) == "hapus"){
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['judul_221047'] ?>
+                          <?= $data['nama_kelas_221047'] ?>
                           </p>
                         </td>
                         <td>
@@ -233,27 +231,21 @@ if(isset($_GET['hal']) == "hapus"){
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['kuota_221047'] ?>
+                            Rp <?= number_format($data['harga_221047'], 0, ',', '.') ?>
                           </p>
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['jadwal_mulai_221047'] ?>
+                          <?php if ($data['status_221047'] == 'aktif'): ?>
+                            <span class="badge bg-success">Aktif</span>
+                          <?php else: ?>
+                            <span class="badge bg-danger">Nonaktif</span>
+                          <?php endif; ?>
                           </p>
                         </td>
                         <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['jadwal_selesai_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="editkelas.php?hal=edit&id=<?= $data['id_221047']?>">Edit</a>
-                            <a class="btn btn-danger" href="kelas.php?hal=hapus&id=<?= $data['id_221047']?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">Hapus</a>
+                            <a class="btn btn-sm btn-warning" href="editkelas.php?hal=edit&id=<?= $data['id_221047']?>">Edit</a>
+                            <a class="btn btn-sm btn-danger" href="kelas.php?hal=hapus&id=<?= $data['id_221047']?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">Hapus</a>
                         </td>
                       </tr>
                       <?php

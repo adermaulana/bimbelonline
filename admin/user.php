@@ -196,8 +196,8 @@ if(isset($_GET['hal']) == "hapus"){
                       <tr>
                         <th scope="col">No</th>
                         <th scope="col">Nama</th>
+                        <th scope="col">Email</th>
                         <th scope="col">Role</th>
-                        <th scope="col">Status</th>
                         <th scope="col">Aksi</th>
                       </tr>
                     </thead>
@@ -213,7 +213,12 @@ if(isset($_GET['hal']) == "hapus"){
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['name_221047'] ?>
+                          <?= $data['nama_lengkap_221047'] ?>
+                          </p>
+                        </td>
+                        <td>
+                          <p class="fs-3 fw-normal mb-0">
+                          <?= $data['email_221047'] ?>
                           </p>
                         </td>
                         <td>
@@ -222,13 +227,8 @@ if(isset($_GET['hal']) == "hapus"){
                           </p>
                         </td>
                         <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="edituser.php?hal=edit&id=<?= $data['id_221047']?>">Edit</a>
-                            <a class="btn btn-danger" href="user.php?hal=hapus&id=<?= $data['id_221047']?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">Hapus</a>
+                            <a class="btn btn-sm btn-warning" href="edituser.php?hal=edit&id=<?= $data['id_221047']?>">Edit</a>
+                            <a class="btn btn-sm btn-danger" href="user.php?hal=hapus&id=<?= $data['id_221047']?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">Hapus</a>
                         </td>
                       </tr>
                       <?php

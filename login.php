@@ -28,21 +28,21 @@
                                     WHERE `email_221047` = '$email'
                                     AND `password_221047` = '$password'
                                     AND `role_221047` = 'admin'
-                                    AND `status_221047` = 'active'");
+");
         $cek = mysqli_num_rows($login);
 
         $loginPengajar = mysqli_query($koneksi, "SELECT * FROM `users_221047`
                                     WHERE `email_221047` = '$email'
                                     AND `password_221047` = '$password'
                                     AND `role_221047` = 'pengajar'
-                                    AND `status_221047` = 'active'");
+");
         $cekPengajar = mysqli_num_rows($loginPengajar);
 
         $loginSiswa = mysqli_query($koneksi, "SELECT * FROM `users_221047`
                                     WHERE `email_221047` = '$email'
                                     AND `password_221047` = '$password'
                                     AND `role_221047` = 'siswa'
-                                    AND `status_221047` = 'active'");
+");
         $cekSiswa = mysqli_num_rows($loginSiswa);
     
         if ($cek > 0) {
@@ -115,7 +115,7 @@
                 <a href="index.php" class="text-nowrap logo-img text-center d-block py-3 w-100">
                   <img src="" width="180" alt="">
                 </a>
-                <p class="text-center">Your Social Campaigns</p>
+                <p class="text-center">Login</p>
                 <form method="POST">
                   <div class="mb-3">
                     <label for="email" class="form-label">Email</label>

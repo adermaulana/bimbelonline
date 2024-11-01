@@ -1,24 +1,27 @@
 <?php
-
+// detail.php
 include '../koneksi.php';
 
-session_start();
-
-if($_SESSION['status'] != 'login'){
-
-    session_unset();
-    session_destroy();
-
-    header("location:../");
-
-}
-
-if ($_SESSION['role_admin'] != 'pengajar') {
- 
-    header("location:../");
-    exit();
-  }
-
+if(isset($_GET['id'])) {
+    $id = $_GET['id'];
+    
+    $query = mysqli_query($koneksi, "
+        SELECT 
+            p.*,
+            u.nama_lengkap_221047,
+            u.email_221047,
+            u.no_hp_221047,
+            k.nama_kelas_221047,
+            k.harga_221047,
+            t.nama_lengkap_221047 as nama_pengajar
+        FROM pendaftaran_221047 p
+        JOIN users_221047 u ON p.id_siswa_221047 = u.id_221047
+        JOIN kelas_221047 k ON p.id_kelas_221047 = k.id_221047
+        JOIN users_221047 t ON k.id_pengajar_221047 = t.id_221047
+        WHERE p.id_221047 = '$id'
+    ");
+    
+    $data = mysqli_fetch_array($query);
 ?>
 <!doctype html>
 <html lang="en">
@@ -26,7 +29,7 @@ if ($_SESSION['role_admin'] != 'pengajar') {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard Pengajar</title>
+  <title>Dahsboard Admin</title>
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
 </head>
@@ -73,39 +76,51 @@ if ($_SESSION['role_admin'] != 'pengajar') {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link warning-hover-bg"
-                href="kelas.php"
+                href="user.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-warning rounded-3">
                   <i class="ti ti-article fs-7 text-warning"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Kelas</span>
+                <span class="hide-menu ms-2 ps-1">Data User</span>
               </a>
             </li>
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="materi.php"
+                href="kelas.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Materi</span>
+                <span class="hide-menu ms-2 ps-1">Data Kelas</span>
               </a>
             </li>
-            <!-- <li class="sidebar-item">
+            <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link success-hover-bg"
-                href="ujian.php"
+                href="pembayaran.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-success rounded-3">
                   <i class="ti ti-cards fs-7 text-success"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Ujian</span>
+                <span class="hide-menu ms-2 ps-1">Data Pembayaran</span>
               </a>
-            </li> -->
+            </li>
+            <li class="sidebar-item">
+              <a
+                class="sidebar-link sidebar-link primary-hover-bg"
+                href="sistem.php"
+                aria-expanded="false"
+              >
+                <span class="aside-icon p-2 bg-light-primary rounded-3">
+                  <i class="ti ti-file-description fs-7 text-primary"></i>
+                </span>
+                <span class="hide-menu ms-2 ps-1">Sistem Aplikasi</span>
+              </a>
+            </li>
 
           </ul>
 
@@ -164,51 +179,49 @@ if ($_SESSION['role_admin'] != 'pengajar') {
       </header>
       <!--  Header End -->
       <div class="container-fluid">
-        <div class="container-fluid">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Tambah Ujian</h5>
-              <div class="card">
-                <div class="card-body col-6">
-                  <form method="POST">
-                    <div class="mb-3">
-                      <label for="name_221047" class="form-label">Nama Ujian</label>
-                      <input type="text" class="form-control" id="name_221047" name="name_221047" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="phone_221047" class="form-label">Deskripsi</label>
-                      <textarea class="form-control" name="" id="" rows="4"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="kelas_id_221047" class="form-label">Kelas</label>
-                        <select class="form-select" id="kelas_id_221047" name="kelas_id_221047" required>
-                            <option value="" disabled selected>Pilih Kelas</option>
-                            <?php
-                              $no = 1;
-                              $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
-                              while($data = mysqli_fetch_array($tampil)):
-                            ?>
-                            <option value="<"><?= $data['judul_221047'] ?></option>
-                            <?php
-                              endwhile; 
-                            ?>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="phone_221047" class="form-label">Mulai</label>
-                      <input type="date" class="form-control" id="phone_221047" name="phone_221047" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="phone_221047" class="form-label">Selesai</label>
-                      <input type="date" class="form-control" id="phone_221047" name="phone_221047" required>
-                    </div>
-
-                    <button type="submit" name="simpan" class="btn btn-primary">Tambah</button>
-                  </form>
+        <div class="row">
+          <div class="col-lg-12 d-flex align-items-stretch">
+            <div class="card w-100">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Detail Pembayaran</h5>
                 </div>
-              </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6>Informasi Siswa</h6>
+                            <p>Nama: <?= $data['nama_lengkap_221047'] ?></p>
+                            <p>Email: <?= $data['email_221047'] ?></p>
+                            <p>No HP: <?= $data['no_hp_221047'] ?></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Informasi Kelas</h6>
+                            <p>Nama Kelas: <?= $data['nama_kelas_221047'] ?></p>
+                            <p>Pengajar: <?= $data['nama_pengajar'] ?></p>
+                            <p>Harga: Rp <?= number_format($data['harga_221047'], 0, ',', '.') ?></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6>Informasi Pembayaran</h6>
+                            <p>Tanggal Daftar: <?= date('d/m/Y H:i', strtotime($data['tanggal_daftar_221047'])) ?></p>
+                            <p>Status: 
+                                <span class="badge bg-<?= ($data['status_bayar_221047'] == 'lunas') ? 'success' : 'warning' ?>">
+                                    <?= ucfirst($data['status_bayar_221047']) ?>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="pembayaran.php" class="btn btn-secondary">Kembali</a>
+                </div>
+            </div>
             </div>
           </div>
+        </div>
+        <div class="py-6 px-6 text-center">
+          <p class="mb-0 fs-4">Design and Developed by <a href="https://adminmart.com/" target="_blank" class="pe-1 text-primary text-decoration-underline">AdminMart.com</a></p>
         </div>
       </div>
     </div>
@@ -223,3 +236,7 @@ if ($_SESSION['role_admin'] != 'pengajar') {
 </body>
 
 </html>
+
+<?php
+}
+?>

@@ -99,13 +99,13 @@ if ($_SESSION['role_admin'] != 'pengajar') {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="materi.php"
+                href="jadwal.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Materi</span>
+                <span class="hide-menu ms-2 ps-1">Data Jadwal</span>
               </a>
             </li>
             <!-- <li class="sidebar-item">
@@ -192,9 +192,7 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                       <tr>
                         <th scope="col">No</th>
                         <th scope="col">Nama Kelas</th>
-                        <th scope="col">Kuota</th>
-                        <th scope="col">Jadwal Mulai</th>
-                        <th scope="col">Jadwal Selesai</th>
+                        <th scope="col">Harga</th>
                         <th scope="col">Status</th>
                         <th scope="col">Aksi</th>
                       </tr>
@@ -202,7 +200,16 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                     <tbody>
                     <?php
                             $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047 WHERE pengajar_id_221047 = '$id_pengajar'");
+                            $tampil = mysqli_query($koneksi, "SELECT 
+                                                                  kelas_221047.*,
+                                                                  users_221047.nama_lengkap_221047 AS nama_pengajar
+                                                              FROM 
+                                                                  kelas_221047
+                                                              JOIN 
+                                                                  users_221047 ON kelas_221047.id_pengajar_221047 = users_221047.id_221047
+                                                              WHERE     
+                                                                  kelas_221047.id_pengajar_221047 = '$id_pengajar';
+                                                              ");
                             while($data = mysqli_fetch_array($tampil)):
                         ?>
                       <tr>
@@ -211,32 +218,28 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['judul_221047'] ?>
+                          <?= $data['nama_kelas_221047'] ?>
                           </p>
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['kuota_221047'] ?>
+                            Rp <?= number_format($data['harga_221047'], 0, ',', '.') ?>
                           </p>
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['jadwal_mulai_221047'] ?>
+                          <?php if ($data['status_221047'] == 'aktif'): ?>
+                            <span class="badge bg-success">Aktif</span>
+                          <?php else: ?>
+                            <span class="badge bg-danger">Nonaktif</span>
+                          <?php endif; ?>
                           </p>
                         </td>
                         <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['jadwal_selesai_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="editkelas.php?hal=edit&id=<?= $data['id_221047']?>">Edit</a>
-                            <a class="btn btn-danger" href="kelas.php?hal=hapus&id=<?= $data['id_221047']?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">Hapus</a>
+                            <a class="btn btn-sm btn-success" href="siswa.php?id_kelas=<?= $data['id_221047']?>">Lihat Siswa</a>
+                            <a class="btn btn-sm btn-info"href="materi.php?id_kelas=<?= $data['id_221047']?>">Lihat Materi</a>
+                            <a class="btn btn-sm btn-warning" href="editkelas.php?hal=edit&id=<?= $data['id_221047']?>">Edit</a>
+                            <a class="btn btn-sm btn-danger" href="kelas.php?hal=hapus&id=<?= $data['id_221047']?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">Hapus</a>
                         </td>
                       </tr>
                       <?php

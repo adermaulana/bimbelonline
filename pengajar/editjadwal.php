@@ -4,6 +4,8 @@ include '../koneksi.php';
 
 session_start();
 
+$id_pengajar = $_SESSION['id_admin'];
+
 if($_SESSION['status'] != 'login'){
 
     session_unset();
@@ -13,84 +15,44 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-$id = 2;
-
-$cek = mysqli_query($koneksi, "SELECT * FROM sistem_221047 WHERE id_221047 = '$id'");
-$data = mysqli_fetch_array($cek);
-if($data){
-    $logo = $data['logo_221047'];
-    $nama = $data['nama_221047'];
-}
-
-if (isset($_POST['simpan'])) {
-  // Folder penyimpanan gambar
-  $target_dir = "uploads/";
-  $logo = $_FILES['logo']['name'];
-  $target_file = $target_dir . basename($logo);
-  $uploadOk = 1;
-
-  // Mendapatkan tipe file untuk memastikan hanya file gambar yang diupload
-  $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-  // Validasi: hanya izinkan format file tertentu
-  $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
-  if (!in_array($imageFileType, $allowed_types)) {
-      echo "<script>alert('Hanya file gambar JPG, JPEG, PNG & GIF yang diperbolehkan.');</script>";
-      $uploadOk = 0;
+if ($_SESSION['role_admin'] != 'pengajar') {
+ 
+    header("location:../");
+    exit();
   }
 
-  // Proses upload file jika lolos validasi
-  if ($uploadOk && move_uploaded_file($_FILES["logo"]["tmp_name"], $target_file)) {
-      // File berhasil diupload, ambil data dari form
-      $id = 2;
-      $nama = $_POST['nama'];
-      // Cek apakah data dengan nama ini sudah ada di database
-      $cek = mysqli_query($koneksi, "SELECT * FROM sistem_221047 WHERE id_221047 = '$id'");
-      $data = mysqli_fetch_array($cek);
-      if($data){
-          $logo = $data['logo_221047'];
-          $nama = $data['nama_221047'];
-      }
-      if (mysqli_num_rows($cek) > 0) {
-          // Jika data sudah ada, update
+  $id_jadwal = $_GET['id']; // id dari parameter URL
+    $query = mysqli_query($koneksi, "SELECT * FROM jadwal_221047 WHERE id_221047 = '$id_jadwal'");
+    $data = mysqli_fetch_array($query);
 
-          
-
-          $update = mysqli_query($koneksi, "UPDATE sistem_221047 SET logo_221047 = '$target_file',nama_221047 = '$nama' WHERE id_221047 = '$id'");
-          if ($update) {
-              echo "<script>
-                      alert('Data dan logo berhasil diperbarui!');
-                      document.location='sistem.php';
-                    </script>";
-          } else {
-              echo "<script>
-                      alert('Gagal memperbarui data di database!');
-                      document.location='sistem.php';
-                    </script>";
-          }
-      } else {
-          // Jika data belum ada, insert
-          $simpan = mysqli_query($koneksi, "INSERT INTO sistem_221047 (nama_221047, logo_221047) VALUES ('$nama', '$target_file')");
-          if ($simpan) {
-              echo "<script>
-                      alert('Data dan logo berhasil disimpan!');
-                      document.location='sistem.php';
-                    </script>";
-          } else {
-              echo "<script>
-                      alert('Gagal menyimpan data ke database!');
-                      document.location='sistem.php';
-                    </script>";
-          }
-      }
-  } else {
-      echo "<script>
-              alert('Gagal mengupload logo!');
-              document.location='sistem.php';
-            </script>";
-  }
-}
-
+    if(isset($_POST['update'])) {
+        $id_jadwal = $_POST['id_221047']; // Asumsi ada hidden input untuk id jadwal
+        $id_kelas = $_POST['id_kelas_221047'];
+        $hari = $_POST['hari_221047'];
+        $jam_mulai = $_POST['jam_mulai_221047'];
+        $jam_selesai = $_POST['jam_selesai_221047'];
+        $link_meet = $_POST['link_meet_221047'];
+    
+        $query = "UPDATE jadwal_221047 
+                  SET id_kelas_221047 = '$id_kelas',
+                      hari_221047 = '$hari',
+                      jam_mulai_221047 = '$jam_mulai',
+                      jam_selesai_221047 = '$jam_selesai',
+                      link_meet_221047 = '$link_meet'
+                  WHERE id_221047 = '$id_jadwal'";
+                  
+        if(mysqli_query($koneksi, $query)) {
+            echo "<script>
+                    alert('Data berhasil diupdate');
+                    window.location.href = 'jadwal.php';
+                  </script>";
+        } else {
+            echo "<script>
+                    alert('Gagal mengupdate data');
+                    window.location.href = 'jadwal.php';
+                  </script>";
+        }
+    }
 
 
 ?>
@@ -100,7 +62,7 @@ if (isset($_POST['simpan'])) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dahsboard Admin</title>
+  <title>Dashboard Pengajar</title>
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
 </head>
@@ -147,51 +109,39 @@ if (isset($_POST['simpan'])) {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link warning-hover-bg"
-                href="user.php"
+                href="kelas.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-warning rounded-3">
                   <i class="ti ti-article fs-7 text-warning"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data User</span>
+                <span class="hide-menu ms-2 ps-1">Kelas</span>
               </a>
             </li>
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="kelas.php"
+                href="jadwal.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Kelas</span>
+                <span class="hide-menu ms-2 ps-1">Data Jadwal</span>
               </a>
             </li>
-            <li class="sidebar-item">
+            <!-- <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link success-hover-bg"
-                href="pembayaran.php"
+                href="ujian.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-success rounded-3">
                   <i class="ti ti-cards fs-7 text-success"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Pembayaran</span>
+                <span class="hide-menu ms-2 ps-1">Data Ujian</span>
               </a>
-            </li>
-            <li class="sidebar-item">
-              <a
-                class="sidebar-link sidebar-link primary-hover-bg"
-                href="sistem.php"
-                aria-expanded="false"
-              >
-                <span class="aside-icon p-2 bg-light-primary rounded-3">
-                  <i class="ti ti-file-description fs-7 text-primary"></i>
-                </span>
-                <span class="hide-menu ms-2 ps-1">Sistem Aplikasi</span>
-              </a>
-            </li>
+            </li> -->
 
           </ul>
 
@@ -253,20 +203,49 @@ if (isset($_POST['simpan'])) {
         <div class="container-fluid">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Tambah Data</h5>
+              <h5 class="card-title fw-semibold mb-4">Tambah Jadwal</h5>
               <div class="card">
                 <div class="card-body col-6">
-                  <form method="POST" enctype="multipart/form-data">
+                <form method="POST">
+                    <input type="hidden" name="id_221047" value="<?= $data['id_221047'] ?>">
                     <div class="mb-3">
-                      <label for="logo" class="form-label">Logo</label>
-                      <input type="file" class="form-control" id="logo" value="<?= $logo ?>" name="logo" required>
+                        <label class="form-label">Kelas</label>
+                        <?php
+                        // Query untuk mendapatkan nama kelas berdasarkan id_kelas dari data jadwal
+                        $query_kelas = mysqli_query($koneksi, "SELECT nama_kelas_221047 FROM kelas_221047 WHERE id_221047 = '{$data['id_kelas_221047']}'");
+                        $kelas = mysqli_fetch_array($query_kelas);
+                        ?>
+                        <input type="hidden" name="id_kelas_221047" value="<?= $data['id_kelas_221047'] ?>">
+                        <input type="text" class="form-control" value="<?= $kelas['nama_kelas_221047'] ?>" readonly>
                     </div>
                     <div class="mb-3">
-                      <label for="nama" class="form-label">Nama Perusahaan</label>
-                      <input type="text" class="form-control" id="nama" value="<?= $nama ?>" name="nama" required>
+                        <label class="form-label">Hari</label>
+                        <select class="form-select" name="hari_221047" required>
+                            <option value="" disabled>Pilih Hari</option>
+                            <?php
+                            $hari_array = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+                            foreach($hari_array as $hari):
+                            ?>
+                            <option value="<?= $hari ?>" <?= ($hari == $data['hari_221047']) ? 'selected' : '' ?>>
+                                <?= $hari ?>
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
-                    <button type="submit" name="simpan" class="btn btn-primary">Tambah</button>
-                  </form>
+                    <div class="mb-3">
+                        <label class="form-label">Jam Mulai</label>
+                        <input type="time" class="form-control" name="jam_mulai_221047" value="<?= $data['jam_mulai_221047'] ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jam Selesai</label>
+                        <input type="time" class="form-control" name="jam_selesai_221047" value="<?= $data['jam_selesai_221047'] ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Link Meet</label>
+                        <input type="url" class="form-control" name="link_meet_221047" value="<?= $data['link_meet_221047'] ?>" required>
+                    </div>
+                    <button type="submit" name="update" class="btn btn-primary">Update</button>
+                </form>
                 </div>
               </div>
             </div>

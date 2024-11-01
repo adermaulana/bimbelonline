@@ -4,6 +4,8 @@ include '../koneksi.php';
 
 session_start();
 
+$id_pengajar = $_SESSION['id_admin'];
+
 if($_SESSION['status'] != 'login'){
 
     session_unset();
@@ -18,6 +20,30 @@ if ($_SESSION['role_admin'] != 'pengajar') {
     header("location:../");
     exit();
   }
+
+  if(isset($_POST['simpan'])) {
+    $id_kelas = $_POST['id_kelas_221047'];
+    $hari = $_POST['hari_221047'];
+    $jam_mulai = $_POST['jam_mulai_221047'];
+    $jam_selesai = $_POST['jam_selesai_221047'];
+    $link_meet = $_POST['link_meet_221047'];
+
+    $query = "INSERT INTO jadwal_221047 (id_kelas_221047, hari_221047, jam_mulai_221047, jam_selesai_221047, link_meet_221047) 
+              VALUES ('$id_kelas', '$hari', '$jam_mulai', '$jam_selesai', '$link_meet')";
+              
+    if(mysqli_query($koneksi, $query)) {
+        echo "<script>
+                alert('Data berhasil disimpan');
+                window.location.href = 'jadwal.php';
+              </script>";
+    } else {
+        echo "<script>
+                alert('Gagal menyimpan data');
+                window.location.href = 'jadwal.php';
+              </script>";
+    }
+}
+
 
 ?>
 <!doctype html>
@@ -85,13 +111,13 @@ if ($_SESSION['role_admin'] != 'pengajar') {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="materi.php"
+                href="jadwal.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Materi</span>
+                <span class="hide-menu ms-2 ps-1">Data Jadwal</span>
               </a>
             </li>
             <!-- <li class="sidebar-item">
@@ -167,65 +193,49 @@ if ($_SESSION['role_admin'] != 'pengajar') {
         <div class="container-fluid">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Ujian</h5>
-              <a class="btn btn-success mb-2" href="tambahujian.php">Tambah Data</a>
+              <h5 class="card-title fw-semibold mb-4">Tambah Jadwal</h5>
               <div class="card">
-              <div class="table-responsive" data-simplebar>
-                  <table
-                    class="table table-borderless align-middle text-nowrap"
-                  >
-                    <thead>
-                      <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Nama Ujian</th>
-                        <th scope="col">Kelas</th>
-                        <th scope="col">Deskripsi</th>
-                        <th scope="col">Mulai</th>
-                        <th scope="col">Selesai</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                            $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
-                            while($data = mysqli_fetch_array($tampil)):
-                        ?>
-                      <tr>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0"><?= $no++ ?></p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['name_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['role_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Hapus</a>
-                        </td>
-                      </tr>
-                      <?php
-                            endwhile; 
-                        ?>
-                    </tbody>
-                  </table>
+                <div class="card-body col-6">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Kelas</label>
+                        <select class="form-select" name="id_kelas_221047" required>
+                            <option value="" disabled selected>Pilih Kelas</option>
+                            <?php
+                            $query_kelas = mysqli_query($koneksi, "SELECT * FROM kelas_221047 WHERE id_pengajar_221047 = '$id_pengajar'");
+                            while($kelas = mysqli_fetch_array($query_kelas)):
+                            ?>
+                            <option value="<?= $kelas['id_221047'] ?>"><?= $kelas['nama_kelas_221047'] ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Hari</label>
+                        <select class="form-select" name="hari_221047" required>
+                            <option value="" disabled selected>Pilih Hari</option>
+                            <option value="Senin">Senin</option>
+                            <option value="Selasa">Selasa</option>
+                            <option value="Rabu">Rabu</option>
+                            <option value="Kamis">Kamis</option>
+                            <option value="Jumat">Jumat</option>
+                            <option value="Sabtu">Sabtu</option>
+                            <option value="Minggu">Minggu</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jam Mulai</label>
+                        <input type="time" class="form-control" name="jam_mulai_221047" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jam Selesai</label>
+                        <input type="time" class="form-control" name="jam_selesai_221047" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Link Meet</label>
+                        <input type="url" class="form-control" name="link_meet_221047" required>
+                    </div>
+                    <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
+                </form>
                 </div>
               </div>
             </div>

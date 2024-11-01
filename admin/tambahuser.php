@@ -28,7 +28,7 @@ if (isset($_POST['simpan'])) {
         $hashedPassword = md5($_POST['password_221047']);
         
         // Insert new user into the database
-        $simpan = mysqli_query($koneksi, "INSERT INTO users_221047 (name_221047, email_221047, phone_221047, role_221047, status_221047, password_221047) VALUES ('$_POST[name_221047]', '$email', '$_POST[phone_221047]', '$_POST[role_221047]', '$_POST[status_221047]', '$hashedPassword')");
+        $simpan = mysqli_query($koneksi, "INSERT INTO users_221047 (nama_lengkap_221047, email_221047, no_hp_221047	, role_221047, password_221047) VALUES ('$_POST[name_221047]', '$email','$_POST[phone_221047]','$_POST[role_221047]', '$hashedPassword')");
 
         if ($simpan) {
             echo "<script>
@@ -229,15 +229,7 @@ if (isset($_POST['simpan'])) {
                             <!-- Tambahkan opsi lain sesuai kebutuhan -->
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="status_221047" class="form-label">Status</label>
-                        <select class="form-select" id="status_221047" name="status_221047" required>
-                            <option value="" disabled selected>Pilih Status</option>
-                            <option value="active">Aktif</option>
-                            <option value="inactive">Nonaktif</option>
-                            <!-- Tambahkan opsi lain sesuai kebutuhan -->
-                        </select>
-                    </div>
+
                     <div class="mb-3">
                       <label for="password_221047" class="form-label">Password</label>
                       <input type="password" class="form-control" id="password_221047" name="password_221047" required>

@@ -4,6 +4,8 @@ include '../koneksi.php';
 
 session_start();
 
+$id_pengajar = $_SESSION['id_admin'];
+
 if($_SESSION['status'] != 'login'){
 
     session_unset();
@@ -19,100 +21,17 @@ if ($_SESSION['role_admin'] != 'pengajar') {
     exit();
   }
 
+  if(isset($_GET['hal']) == "hapus"){
 
-  if(isset($_GET['hal'])){
-    if($_GET['hal'] == "edit"){
-        $tampil = mysqli_query($koneksi, "SELECT * FROM materi_221047 WHERE id_221047 = '$_GET[id]'");
-        $data = mysqli_fetch_array($tampil);
-        if($data){
-            $id = $data['id_221047'];
-            $kelas = $data['judul_221047'];
-            $kelas_id = $data['kelas_id_221047'];
-            $file = $data['file_path_221047'];
-            $deskripsi = $data['deskripsi_221047'];
-        }
-    }
-}
-
-if (isset($_POST['simpan'])) {
-    // Ambil data dari form
-    $id = $_GET['id']; // Ambil ID dari URL untuk pengeditan
-    $judul = $_POST['name_221047']; // Mengambil judul materi
-    $kelas_id = $_POST['kelas_id_221047']; // Mengambil ID kelas
-    $deskripsi = $_POST['deskripsi_221047']; // Mengambil deskripsi
-
-    // Variabel untuk menyimpan path file yang akan diupdate
-    $filePathLama = ''; 
-
-    // Ambil data file lama dari database
-    $query = mysqli_query($koneksi, "SELECT file_path_221047 FROM materi_221047 WHERE id_221047='$id'");
-    if ($query) {
-        $data = mysqli_fetch_assoc($query);
-        $filePathLama = $data['file_path_221047'];
-    }
-
-    // Proses upload file
-    $uploadOk = 1;
-
-    // Cek jika ada file baru diupload
-    if ($_FILES["file_path_221047"]["name"]) {
-        $target_dir = "uploads/"; // Tentukan direktori penyimpanan
-        $target_file = $target_dir . basename($_FILES["file_path_221047"]["name"]);
-        $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-        // Hanya izinkan format file PDF
-        if ($fileType != "pdf") {
-            echo "<script>alert('Maaf, hanya file PDF yang diizinkan.');</script>";
-            $uploadOk = 0;
-        }
-
-        // Cek apakah file sudah ada
-        if (file_exists($target_file)) {
-            echo "<script>alert('Maaf, file sudah ada.');</script>";
-            $uploadOk = 0;
-        }
-
-        // Batasi ukuran file (misalnya, maksimal 5MB)
-        if ($_FILES["file_path_221047"]["size"] > 5000000) { // 5MB
-            echo "<script>alert('Maaf, ukuran file terlalu besar.');</script>";
-            $uploadOk = 0;
-        }
-
-        // Cek apakah $uploadOk di-set ke 0 oleh kesalahan
-        if ($uploadOk == 0) {
-            echo "<script>alert('Maaf, file tidak dapat diupload.');</script>";
-        } else {
-            // Jika semua ok, coba untuk upload file
-            if (move_uploaded_file($_FILES["file_path_221047"]["tmp_name"], $target_file)) {
-                // Jika berhasil upload file baru, update path file di database
-                $filePathLama = $target_file; // Ganti dengan file baru
-            } else {
-                echo "<script>alert('Maaf, terjadi kesalahan saat mengupload file.');</script>";
-            }
-        }
-    } else {
-        // Jika tidak ada file baru, gunakan file lama
-        $filePathLama = $filePathLama; // Tidak ada perubahan
-    }
-
-    // Lakukan query untuk menyimpan data ke database
-    $simpan = mysqli_query($koneksi, "UPDATE materi_221047 SET judul_221047='$judul', kelas_id_221047='$kelas_id', file_path_221047='$filePathLama', deskripsi_221047='$deskripsi' WHERE id_221047='$id'");
-
-    if ($simpan) {
+    $hapus = mysqli_query($koneksi, "DELETE FROM jadwal_221047 WHERE id_221047 = '$_GET[id]'");
+  
+    if($hapus){
         echo "<script>
-                alert('Update data sukses!');
-                document.location='materi.php';
-              </script>";
-    } else {
-        echo "<script>
-                alert('Update data Gagal!');
-                document.location='materi.php';
-              </script>";
+        alert('Hapus data sukses!');
+        document.location='jadwal.php';
+        </script>";
     }
-}
-
-
-
+  }
 
 ?>
 <!doctype html>
@@ -180,13 +99,13 @@ if (isset($_POST['simpan'])) {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="materi.php"
+                href="jadwal.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Materi</span>
+                <span class="hide-menu ms-2 ps-1">Data Jadwal</span>
               </a>
             </li>
             <!-- <li class="sidebar-item">
@@ -262,43 +181,57 @@ if (isset($_POST['simpan'])) {
         <div class="container-fluid">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Tambah Materi</h5>
+              <h5 class="card-title fw-semibold mb-4">Jadwal</h5>
+              <a class="btn btn-success mb-2" href="tambahjadwal.php">Tambah Data</a>
               <div class="card">
-                <div class="card-body col-6">
-                  <form method="POST" enctype="multipart/form-data">
-                    <div class="mb-3">
-                      <label for="name_221047" class="form-label">Judul Materi</label>
-                      <input type="text" class="form-control" id="name_221047" value="<?= $kelas ?>" name="name_221047" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="kelas_id_221047" class="form-label">Kelas</label>
-                        <select class="form-select" id="kelas_id_221047" name="kelas_id_221047" required>
-                            <option value="" disabled>Pilih Kelas</option>
-                            <?php
-                            $tampil_kelas = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
-                            while ($kelas = mysqli_fetch_array($tampil_kelas)):
-                                // Menandai kelas yang dipilih
-                                $selected = ($kelas['id_221047'] == $kelas_id) ? 'selected' : '';
-                            ?>
-                            <option value="<?= $kelas['id_221047'] ?>" <?= $selected ?>><?= $kelas['judul_221047'] ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="file_path_221047" class="form-label">File</label>
-                        <input type="file" class="form-control" id="file_path_221047" name="file_path_221047">
-                        <!-- Tampilkan nama file saat ini jika ada -->
-                        <?php if (!empty($file)): ?>
-                            <small class="text-muted">File saat ini: <?= basename($file) ?></small>
-                        <?php endif; ?>
-                    </div>
-                    <div class="mb-3">
-                      <label for="deskripsi_221047" class="form-label">Deskripsi</label>
-                      <textarea class="form-control" name="deskripsi_221047" name="" id="" rows="4"><?= $deskripsi ?></textarea>
-                    </div>
-
-                    <button type="submit" name="simpan" class="btn btn-primary">Edit</button>
-                  </form>
+              <div class="table-responsive" data-simplebar>
+              <table class="table table-borderless align-middle">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Kelas</th>
+                        <th>Hari</th>
+                        <th>Jam</th>
+                        <th>Link Meet</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $no = 1;
+                    $query = mysqli_query($koneksi, "SELECT 
+                                                    jadwal_221047.*,
+                                                    kelas_221047.nama_kelas_221047
+                                                FROM 
+                                                    jadwal_221047
+                                                JOIN 
+                                                    kelas_221047 ON jadwal_221047.id_kelas_221047 = kelas_221047.id_221047
+                                                WHERE 
+                                                    kelas_221047.id_pengajar_221047 = '$id_pengajar'
+                                                ORDER BY 
+                                                    FIELD(hari_221047, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'),
+                                                    jam_mulai_221047");
+                    while($data = mysqli_fetch_array($query)):
+                    ?>
+                    <tr>
+                        <td><?= $no++ ?></td>
+                        <td><?= $data['nama_kelas_221047'] ?></td>
+                        <td><?= $data['hari_221047'] ?></td>
+                        <td><?= $data['jam_mulai_221047'] ?> - <?= $data['jam_selesai_221047'] ?> WITA</td>
+                        <td>
+                            <a href="<?= $data['link_meet_221047'] ?>" target="_blank" class="btn btn-sm btn-primary">
+                                Join Meet
+                            </a>
+                        </td>
+                        <td>
+                            <a href="editjadwal.php?id=<?= $data['id_221047'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="jadwal.php?hal=hapus&id=<?= $data['id_221047'] ?>" class="btn btn-sm btn-danger" 
+                            onclick="return confirm('Apakah yakin ingin menghapus jadwal ini?')">Hapus</a>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
                 </div>
               </div>
             </div>

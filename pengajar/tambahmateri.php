@@ -19,62 +19,57 @@ if ($_SESSION['role_admin'] != 'pengajar') {
     exit();
   }
 
-  if (isset($_POST['simpan'])) {
-    // Ambil data dari form
-    $judul = $_POST['name_221047']; // Mengambil judul materi
-    $kelas_id = $_POST['kelas_id_221047']; // Mengambil ID kelas
-    $deskripsi = $_POST['deskripsi_221047']; // Mengambil deskripsi
+  $id_kelas = $_GET['id_kelas'];
 
+  if(isset($_POST['simpan'])){
+    $id_kelas = $_POST['id_kelas_221047'];
+    $judul = $_POST['judul_221047'];
+    $deskripsi = $_POST['deskripsi_221047'];
+    
     // Proses upload file
-    $target_dir = "uploads/"; // Tentukan direktori penyimpanan
-    $target_file = $target_dir . basename($_FILES["file_path_221047"]["name"]);
-    $uploadOk = 1;
-    $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-    // Hanya izinkan format file PDF
-    if ($fileType != "pdf") {
-        echo "<script>alert('Maaf, hanya file PDF yang diizinkan.');</script>";
-        $uploadOk = 0;
-    }
-
-    // Cek apakah file sudah ada
-    if (file_exists($target_file)) {
-        echo "<script>alert('Maaf, file sudah ada.');</script>";
-        $uploadOk = 0;
-    }
-
-    // Batasi ukuran file (misalnya, maksimal 5MB)
-    if ($_FILES["file_path_221047"]["size"] > 5000000) { // 5MB
-        echo "<script>alert('Maaf, ukuran file terlalu besar.');</script>";
-        $uploadOk = 0;
-    }
-
-    // Cek apakah $uploadOk di-set ke 0 oleh kesalahan
-    if ($uploadOk == 0) {
-        echo "<script>alert('Maaf, file tidak dapat diupload.');</script>";
-    } else {
-        // Jika semua ok, coba untuk upload file
-        if (move_uploaded_file($_FILES["file_path_221047"]["tmp_name"], $target_file)) {
-            // Lakukan query untuk menyimpan data ke database
-            $simpan = mysqli_query($koneksi, "INSERT INTO materi_221047 (judul_221047, kelas_id_221047, file_path_221047, deskripsi_221047) VALUES ('$judul', '$kelas_id', '$target_file', '$deskripsi')");
-
-            if ($simpan) {
+    $nama_file = $_FILES['file_materi_221047']['name'];
+    $tmp_file = $_FILES['file_materi_221047']['tmp_name'];
+    
+    // Generate nama file unik untuk menghindari duplikasi
+    $extension = pathinfo($nama_file, PATHINFO_EXTENSION);
+    $nama_file_unik = date('YmdHis') . '_' . uniqid() . '.' . $extension;
+    
+    $path = "materi/" . $nama_file_unik;
+    
+    // Array ekstensi file yang diperbolehkan
+    $allowed = array('pdf', 'doc', 'docx', 'ppt', 'pptx');
+    
+    // Validasi ekstensi file
+    if(in_array(strtolower($extension), $allowed)) {
+        if(move_uploaded_file($tmp_file, $path)){
+            $simpan = mysqli_query($koneksi, "INSERT INTO materi_221047 
+                                             (id_kelas_221047, judul_221047, deskripsi_221047, 
+                                              file_materi_221047, created_at_221047) 
+                                             VALUES 
+                                             ('$id_kelas', '$judul', '$deskripsi', 
+                                              '$nama_file_unik', NOW())");
+            
+            if($simpan){
                 echo "<script>
-                        alert('Simpan data sukses!');
-                        document.location='materi.php';
+                        alert('Materi berhasil ditambahkan!');
+                        document.location='kelas.php';
                       </script>";
             } else {
                 echo "<script>
-                        alert('Simpan data Gagal!');
-                        document.location='materi.php';
+                        alert('Gagal menyimpan data materi!');
                       </script>";
             }
         } else {
-            echo "<script>alert('Maaf, terjadi kesalahan saat mengupload file.');</script>";
+            echo "<script>
+                    alert('Gagal upload file!');
+                  </script>";
         }
+    } else {
+        echo "<script>
+                alert('Format file tidak didukung!');
+              </script>";
     }
 }
-
 
 
 ?>
@@ -143,13 +138,13 @@ if ($_SESSION['role_admin'] != 'pengajar') {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="materi.php"
+                href="jadwal.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Materi</span>
+                <span class="hide-menu ms-2 ps-1">Data Jadwal</span>
               </a>
             </li>
             <!-- <li class="sidebar-item">
@@ -230,34 +225,21 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                 <div class="card-body col-6">
                   <form method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
-                      <label for="name_221047" class="form-label">Judul Materi</label>
-                      <input type="text" class="form-control" id="name_221047" name="name_221047" required>
+                      <label for="judul_221047" class="form-label">Judul Materi</label>
+                      <input type="text" class="form-control" id="judul_221047" name="judul_221047" required>
                     </div>
                     <div class="mb-3">
-                        <label for="kelas_id_221047" class="form-label">Kelas</label>
-                        <select class="form-select" id="kelas_id_221047" name="kelas_id_221047" required>
-                            <option value="" disabled selected>Pilih Kelas</option>
-                            <?php
-                              $no = 1;
-                              $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
-                              while($data = mysqli_fetch_array($tampil)):
-                            ?>
-                            <option value="<?= $data['id_221047'] ?>"><?= $data['judul_221047'] ?></option>
-                            <?php
-                              endwhile; 
-                            ?>
-                        </select>
+                      <label for="deskripsi_221047" class="form-label">Deskripsi Materi</label>
+                      <textarea class="form-control" id="deskripsi_221047" name="deskripsi_221047" required></textarea>
                     </div>
                     <div class="mb-3">
-                      <label for="file_path_221047" class="form-label">File</label>
-                      <input type="file" class="form-control" id="file_path_221047" name="file_path_221047" required>
+                      <label for="file_materi_221047" class="form-label">File Materi</label>
+                      <input type="file" class="form-control" id="file_materi_221047" name="file_materi_221047" required>
+                      <small class="text-muted">Format yang didukung: PDF, DOC, DOCX, PPT, PPTX</small>
                     </div>
-                    <div class="mb-3">
-                      <label for="deskripsi_221047" class="form-label">Deskripsi</label>
-                      <textarea class="form-control" name="deskripsi_221047" name="" id="" rows="4"></textarea>
-                    </div>
-
-                    <button type="submit" name="simpan" class="btn btn-primary">Tambah</button>
+                    <input type="hidden" name="id_kelas_221047" value="<?= $_GET['id_kelas'] ?>">
+                    <button type="submit" name="simpan" class="btn btn-primary">Tambah Materi</button>
+                    <a href="kelas.php" class="btn btn-secondary">Kembali</a>
                   </form>
                 </div>
               </div>

@@ -15,15 +15,14 @@ if($_SESSION['status'] != 'login'){
 
 if (isset($_POST['simpan'])) {
     // Ambil data dari form
-    $kelas = $_POST['judul_221047']; // Mengambil nama kelas
-    $pengajar_id = $_POST['pengajar_id_221047']; // Mengambil ID pengajar
-    $kuota = $_POST['kuota_221047']; // Mengambil kuota
-    $jadwal_mulai = $_POST['jadwal_mulai_221047']; // Mengambil jadwal mulai
-    $jadwal_selesai = $_POST['jadwal_selesai_221047']; // Mengambil jadwal selesai
+    $kelas = $_POST['nama_kelas_221047']; // Mengambil nama kelas
+    $pengajar_id = $_POST['id_pengajar_221047']; // Mengambil ID pengajar
+    $deskripsi = $_POST['deskripsi_221047']; // Mengambil kuota
+    $harga = $_POST['harga_221047']; // Mengambil jadwal mulai
     $status = $_POST['status_221047']; // Mengambil status
 
     // Lakukan query untuk menyimpan data ke database
-    $simpan = mysqli_query($koneksi, "INSERT INTO kelas_221047 (judul_221047, pengajar_id_221047, kuota_221047, jadwal_mulai_221047, jadwal_selesai_221047, status_221047) VALUES ('$kelas', '$pengajar_id', '$kuota', '$jadwal_mulai', '$jadwal_selesai', '$status')");
+    $simpan = mysqli_query($koneksi, "INSERT INTO kelas_221047 (nama_kelas_221047, id_pengajar_221047, deskripsi_221047, harga_221047,status_221047) VALUES ('$kelas', '$pengajar_id', '$deskripsi', '$harga', '$status')");
 
     if ($simpan) {
         echo "<script>
@@ -203,42 +202,38 @@ if (isset($_POST['simpan'])) {
                 <div class="card-body col-6">
                   <form method="POST">
                     <div class="mb-3">
-                      <label for="judul_221047" class="form-label">Nama Kelas</label>
-                      <input type="text" class="form-control" id="judul_221047" name="judul_221047" required>
+                      <label for="nama_kelas_221047" class="form-label">Nama Kelas</label>
+                      <input type="text" class="form-control" id="nama_kelas_221047" name="nama_kelas_221047" required>
                     </div>
                     <div class="mb-3">
                         <label for="role_221047" class="form-label">Nama Pengajar</label>
-                        <select class="form-select" id="pengajar_id_221047" name="pengajar_id_221047" required>
+                        <select class="form-select" id="id_pengajar_221047" name="id_pengajar_221047" required>
                             <option  disabled selected>Pilih Pengajar</option>
                             <?php
                             $no = 1;
                             $tampil = mysqli_query($koneksi, "SELECT * FROM users_221047 WHERE role_221047 = 'pengajar'");
                             while($data = mysqli_fetch_array($tampil)):
                             ?>
-                            <option value="<?= $data['id_221047'] ?>"><?= $data['name_221047'] ?></option>
+                            <option value="<?= $data['id_221047'] ?>"><?= $data['nama_lengkap_221047'] ?></option>
                             <?php
                               endwhile; 
                             ?>
                         </select>
                     </div>
                     <div class="mb-3">
-                      <label for="kuota_221047" class="form-label">Kuota</label>
-                      <input type="number" class="form-control" id="kuota_221047" name="kuota_221047" required>
+                      <label for="deskripsi_221047" class="form-label">Deskripsi</label>
+                      <textarea class="form-control" id="deskripsi_221047" name="deskripsi_221047" required></textarea>
                     </div>
                     <div class="mb-3">
-                      <label for="phone_221047" class="form-label">Jadwal Mulai</label>
-                      <input type="date" class="form-control" id="jadwal_mulai_221047" name="jadwal_mulai_221047" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="phone_221047" class="form-label">Jadwal Selesai</label>
-                      <input type="date" class="form-control" id="jadwal_selesai_221047" name="jadwal_selesai_221047" required>
+                      <label for="harga_221047" class="form-label">Harga</label>
+                      <input type="number" class="form-control" id="harga_221047" name="harga_221047" required>
                     </div>
                     <div class="mb-3">
                         <label for="status_221047" class="form-label">Status</label>
                         <select class="form-select" id="status_221047" name="status_221047" required>
                             <option value="" disabled selected>Pilih Status</option>
-                            <option value="Aktif">Aktif</option>
-                            <option value="Nonaktif">Nonaktif</option>
+                            <option value="aktif">Aktif</option>
+                            <option value="nonaktif">Nonaktif</option>
                             <!-- Tambahkan opsi lain sesuai kebutuhan -->
                         </select>
                     </div>

@@ -182,138 +182,49 @@ if ($_SESSION['role_admin'] != 'admin') {
       <div class="container-fluid">
         <!--  Row 1 -->
         <div class="row">
-          <div class="col-lg-12">
-            <div class="row">
-              <div class="col-lg-6 col-sm-6">
-                <!-- Yearly Breakup -->
-                <div class="card overflow-hidden">
-                  <div class="card-body p-4">
-                    <h5 class="card-title mb-10 fw-semibold">Total Pembelian</h5>
-                    <div class="row align-items-center">
-                      <div class="col-7">
-                        <h4 class="fw-semibold mb-3">12</h4>
-                        <div class="d-flex align-items-center mb-2">
-                          <span
-                            class="me-1 rounded-circle bg-light-success round-20 d-flex align-items-center justify-content-center">
-                            <i class="ti ti-arrow-up-left text-success"></i>
-                          </span>
-                          <p class="text-dark me-1 fs-3 mb-0">+9%</p>
-                          <p class="fs-3 mb-0">last year</p>
-                        </div>
-                        <div class="d-flex align-items-center">
-                          <div class="me-3">
-                            <span class="round-8 bg-primary rounded-circle me-2 d-inline-block"></span>
-                            <span class="fs-2">Oragnic</span>
-                          </div>
-                          <div>
-                            <span class="round-8 bg-danger rounded-circle me-2 d-inline-block"></span>
-                            <span class="fs-2">Refferal</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-5">
-                        <div class="d-flex justify-content-center">
-                          <div id="grade"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-6 col-sm-6">
-                <!-- Monthly Earnings -->
-                <div class="card">
+          <div class="col-md-3">
+              <div class="card">
                   <div class="card-body">
-                    <div class="row alig n-items-start">
-                      <div class="col-8">
-                        <h5 class="card-title mb-10 fw-semibold">Total Pendapatan</h5>
-                        <h4 class="fw-semibold mb-3">Rp 250.000.000</h4>
-                        <div class="d-flex align-items-center pb-1">
-                          <span
-                            class="me-2 rounded-circle bg-light-danger round-20 d-flex align-items-center justify-content-center">
-                            <i class="ti ti-arrow-down-right text-danger"></i>
-                          </span>
-                          <p class="text-dark me-1 fs-3 mb-0">+9%</p>
-                          <p class="fs-3 mb-0">last year</p>
-                        </div>
-                      </div>
-                      <div class="col-4">
-                        <div class="d-flex justify-content-end">
-                          <div
-                            class="text-white bg-danger rounded-circle p-7 d-flex align-items-center justify-content-center">
-                            <i class="ti ti-currency-dollar fs-6"></i>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                      <h5 class="card-title">Total Kelas</h5>
+                      <?php
+                      $query_kelas = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM kelas_221047");
+                      $total_kelas = mysqli_fetch_assoc($query_kelas)['total'];
+                      ?>
+                      <h2><?= $total_kelas ?></h2>
                   </div>
-                  <div id="earning"></div>
-                </div>
               </div>
-            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-12 d-flex align-items-stretch">
-            <div class="card w-100">
-              <div class="card-body p-4">
-                <div
-                  class="d-flex mb-4 justify-content-between align-items-center"
-                >
-                  <h5 class="mb-0 fw-bold">Daftar Pembeli Paket dan Materi</h5>
-                </div>
+          <div class="col-md-3">
+              <div class="card">
+                  <div class="card-body">
+                      <h5 class="card-title">Total Siswa</h5>
+                      <?php
+                      $query_siswa = mysqli_query($koneksi, "SELECT COUNT(DISTINCT id_siswa_221047) as total 
+                                                            FROM pendaftaran_221047 
+                                                            JOIN kelas_221047 ON pendaftaran_221047.id_kelas_221047 = kelas_221047.id_221047
+                                                            ");
+                      $total_siswa = mysqli_fetch_assoc($query_siswa)['total'];
+                      ?>
+                      <h2><?= $total_siswa ?></h2>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="card">
+                  <div class="card-body">
+                      <h5 class="card-title">Total Materi</h5>
+                      <?php
+                      $query_materi = mysqli_query($koneksi, "SELECT COUNT(*) as total 
+                                                            FROM materi_221047 
+                                                            JOIN kelas_221047 ON materi_221047.id_kelas_221047 = kelas_221047.id_221047
+                                                            ");
+                      $total_materi = mysqli_fetch_assoc($query_materi)['total'];
+                      ?>
+                      <h2><?= $total_materi ?></h2>
+                  </div>
+              </div>
+          </div>
 
-                <div class="table-responsive" data-simplebar>
-                  <table
-                    class="table table-borderless align-middle text-nowrap"
-                  >
-                    <thead>
-                      <tr>
-                        <th scope="col">Foto</th>
-                        <th scope="col">Nama Pembeli</th>
-                        <th scope="col">Jenis Pembelian</th>
-                        <th scope="col">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <div class="d-flex align-items-center">
-                            <div class="me-4">
-                              <img
-                                src="../assets/images/profile/user1.jpg"
-                                width="50"
-                                class="rounded-circle"
-                                alt=""
-                              />
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">Mita</p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                            Langganan Paket
-                          </p>
-                        </td>
-                        <td>
-                          <span
-                            class="badge bg-light-danger rounded-pill text-danger px-3 py-2 fs-3"
-                            >Belum Bayar</span
-                          >
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="py-6 px-6 text-center">
-          <p class="mb-0 fs-4">Design and Developed by <a href="https://adminmart.com/" target="_blank" class="pe-1 text-primary text-decoration-underline">AdminMart.com</a></p>
-        </div>
       </div>
     </div>
   </div>

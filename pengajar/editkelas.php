@@ -25,11 +25,10 @@ if ($_SESSION['role_admin'] != 'pengajar') {
         $data = mysqli_fetch_array($tampil);
         if($data){
             $id = $data['id_221047'];
-            $kelas = $data['judul_221047'];
-            $pengajar_id = $data['pengajar_id_221047'];
-            $kuota = $data['kuota_221047'];
-            $jadwal_mulai = $data['jadwal_mulai_221047'];
-            $jadwal_selesai = $data['jadwal_selesai_221047'];
+            $kelas = $data['nama_kelas_221047'];
+            $pengajar_id = $data['id_pengajar_221047'];
+            $harga = $data['harga_221047'];
+            $deskripsi = $data['deskripsi_221047'];
             $status = $data['status_221047'];
         }
     }
@@ -37,20 +36,18 @@ if ($_SESSION['role_admin'] != 'pengajar') {
 
 if (isset($_POST['simpan'])) {
     // Ambil data dari form
-    $kelas = $_POST['judul_221047']; // Mengambil nama kelas
-    $pengajar_id = $_POST['pengajar_id_221047']; // Mengambil ID pengajar
-    $kuota = $_POST['kuota_221047']; // Mengambil kuota
-    $jadwal_mulai = $_POST['jadwal_mulai_221047']; // Mengambil jadwal mulai
-    $jadwal_selesai = $_POST['jadwal_selesai_221047']; // Mengambil jadwal selesai
+    $kelas = $_POST['nama_kelas_221047']; // Mengambil nama kelas
+    $pengajar_id = $_SESSION['id_admin'];
+    $harga = $_POST['harga_221047']; // Mengambil kuota
+    $deskripsi = $_POST['deskripsi_221047']; // Mengambil jadwal mulai
     $status = $_POST['status_221047']; // Mengambil status
 
     // Lakukan query untuk memperbarui data di database
     $update = mysqli_query($koneksi, "UPDATE kelas_221047 SET 
-        judul_221047 = '$kelas', 
-        pengajar_id_221047 = '$pengajar_id', 
-        kuota_221047 = '$kuota', 
-        jadwal_mulai_221047 = '$jadwal_mulai', 
-        jadwal_selesai_221047 = '$jadwal_selesai', 
+        nama_kelas_221047 = '$kelas', 
+        id_pengajar_221047 = '$pengajar_id', 
+        harga_221047 = '$harga', 
+        deskripsi_221047 = '$deskripsi', 
         status_221047 = '$status' 
         WHERE id_221047 = '$_GET[id]'");
 
@@ -133,13 +130,13 @@ if (isset($_POST['simpan'])) {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="materi.php"
+                href="jadwal.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Materi</span>
+                <span class="hide-menu ms-2 ps-1">Data Jadwal</span>
               </a>
             </li>
             <!-- <li class="sidebar-item">
@@ -219,33 +216,28 @@ if (isset($_POST['simpan'])) {
               <div class="card">
                 <div class="card-body col-6">
                   <form method="POST">
-                    <input type="hidden" name="pengajar_id_221047" value="<?= $_SESSION['id_admin'] ?>">
                     <div class="mb-3">
-                      <label for="judul_221047" class="form-label">Nama Kelas</label>
-                      <input type="text" class="form-control" id="judul_221047" value="<?= $kelas ?>" name="judul_221047" required>
+                      <label for="nama_kelas_221047" class="form-label">Nama Kelas</label>
+                      <input type="text" class="form-control" id="nama_kelas_221047" value="<?= $kelas ?>" name="nama_kelas_221047" required>
                     </div>
                     <div class="mb-3">
-                      <label for="kuota_221047" class="form-label">Kuota</label>
-                      <input type="number" class="form-control" id="kuota_221047" value="<?= $kuota ?>" name="kuota_221047" required>
+                      <label for="deskripsi_221047" class="form-label">Deskripsi</label>
+                      <textarea class="form-control" id="deskripsi_221047" name="deskripsi_221047" required><?= $deskripsi ?></textarea>
                     </div>
                     <div class="mb-3">
-                      <label for="jadwal_mulai_221047" class="form-label">Jadwal Mulai</label>
-                      <input type="date" class="form-control" id="jadwal_mulai_221047" value="<?= $jadwal_mulai ?>" name="jadwal_mulai_221047" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="jadwal_selesai_221047" class="form-label">Jadwal Selesai</label>
-                      <input type="date" class="form-control" id="jadwal_selesai_221047" value="<?= $jadwal_selesai ?>" name="jadwal_selesai_221047" required>
+                      <label for="harga_221047" class="form-label">Harga</label>
+                      <input type="number" class="form-control" id="harga_221047" value="<?= $harga ?>" name="harga_221047" required>
                     </div>
                     <div class="mb-3">
                         <label for="status_221047" class="form-label">Status</label>
                         <select class="form-select" id="status_221047" name="status_221047" required>
                             <option value="" disabled>Pilih Status</option>
-                            <option value="Aktif" <?= ($status == "Aktif") ? 'selected' : '' ?>>Aktif</option>
-                            <option value="Nonaktif" <?= ($status == "Nonaktif") ? 'selected' : '' ?>>Nonaktif</option>
+                            <option value="aktif" <?= ($status == "aktif") ? 'selected' : '' ?>>Aktif</option>
+                            <option value="nonaktif" <?= ($status == "nonaktif") ? 'selected' : '' ?>>Nonaktif</option>
                             <!-- Tambahkan opsi lain sesuai kebutuhan -->
                         </select>
                     </div>
-                    <button type="submit" name="simpan" class="btn btn-primary">Tambah</button>
+                    <button type="submit" name="simpan" class="btn btn-primary">Edit</button>
                   </form>
                 </div>
               </div>

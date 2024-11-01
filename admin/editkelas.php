@@ -19,11 +19,10 @@ if(isset($_GET['hal'])){
         $data = mysqli_fetch_array($tampil);
         if($data){
             $id = $data['id_221047'];
-            $kelas = $data['judul_221047'];
-            $pengajar_id = $data['pengajar_id_221047'];
-            $kuota = $data['kuota_221047'];
-            $jadwal_mulai = $data['jadwal_mulai_221047'];
-            $jadwal_selesai = $data['jadwal_selesai_221047'];
+            $kelas = $data['nama_kelas_221047'];
+            $pengajar_id = $data['id_pengajar_221047'];
+            $harga = $data['harga_221047'];
+            $deskripsi = $data['deskripsi_221047'];
             $status = $data['status_221047'];
         }
     }
@@ -31,20 +30,18 @@ if(isset($_GET['hal'])){
 
 if (isset($_POST['simpan'])) {
     // Ambil data dari form
-    $kelas = $_POST['judul_221047']; // Mengambil nama kelas
-    $pengajar_id = $_POST['pengajar_id_221047']; // Mengambil ID pengajar
-    $kuota = $_POST['kuota_221047']; // Mengambil kuota
-    $jadwal_mulai = $_POST['jadwal_mulai_221047']; // Mengambil jadwal mulai
-    $jadwal_selesai = $_POST['jadwal_selesai_221047']; // Mengambil jadwal selesai
+    $kelas = $_POST['nama_kelas_221047']; // Mengambil nama kelas
+    $pengajar_id = $_POST['id_pengajar_221047']; // Mengambil ID pengajar
+    $harga = $_POST['harga_221047']; // Mengambil kuota
+    $deskripsi = $_POST['deskripsi_221047']; // Mengambil jadwal mulai
     $status = $_POST['status_221047']; // Mengambil status
 
     // Lakukan query untuk memperbarui data di database
     $update = mysqli_query($koneksi, "UPDATE kelas_221047 SET 
-        judul_221047 = '$kelas', 
-        pengajar_id_221047 = '$pengajar_id', 
-        kuota_221047 = '$kuota', 
-        jadwal_mulai_221047 = '$jadwal_mulai', 
-        jadwal_selesai_221047 = '$jadwal_selesai', 
+        nama_kelas_221047 = '$kelas', 
+        id_pengajar_221047 = '$pengajar_id', 
+        harga_221047 = '$harga', 
+        deskripsi_221047 = '$deskripsi', 
         status_221047 = '$status' 
         WHERE id_221047 = '$_GET[id]'");
 
@@ -226,12 +223,12 @@ if (isset($_POST['simpan'])) {
                 <div class="card-body col-6">
                   <form method="POST">
                     <div class="mb-3">
-                      <label for="judul_221047" class="form-label">Nama Kelas</label>
-                      <input type="text" class="form-control" id="judul_221047" value="<?= $kelas ?>" name="judul_221047" required>
+                      <label for="nama_kelas_221047" class="form-label">Nama Kelas</label>
+                      <input type="text" class="form-control" id="nama_kelas_221047" value="<?= $kelas ?>" name="nama_kelas_221047" required>
                     </div>
                     <div class="mb-3">
                         <label for="role_221047" class="form-label">Nama Pengajar</label>
-                        <select class="form-select" id="pengajar_id_221047" name="pengajar_id_221047" required>
+                        <select class="form-select" id="id_pengajar_221047" name="id_pengajar_221047" required>
                             <option disabled>Pilih Pengajar</option>
                             <?php
                             $tampil = mysqli_query($koneksi, "SELECT * FROM users_221047 WHERE role_221047 = 'pengajar'");
@@ -239,28 +236,24 @@ if (isset($_POST['simpan'])) {
                                 // Cek apakah ID pengajar sama dengan pengajar_id yang dipilih
                                 $selected = ($data['id_221047'] == $pengajar_id) ? 'selected' : '';
                             ?>
-                            <option value="<?= $data['id_221047'] ?>" <?= $selected ?>><?= $data['name_221047'] ?></option>
+                            <option value="<?= $data['id_221047'] ?>" <?= $selected ?>><?= $data['nama_lengkap_221047'] ?></option>
                             <?php endwhile; ?>
                         </select>
                     </div>
                     <div class="mb-3">
-                      <label for="kuota_221047" class="form-label">Kuota</label>
-                      <input type="number" class="form-control" id="kuota_221047" value="<?= $kuota ?>" name="kuota_221047" required>
+                      <label for="deskripsi_221047" class="form-label">Deskripsi</label>
+                      <textarea class="form-control" id="deskripsi_221047" name="deskripsi_221047" required><?= $deskripsi ?></textarea>
                     </div>
                     <div class="mb-3">
-                      <label for="phone_221047" class="form-label">Jadwal Mulai</label>
-                      <input type="date" class="form-control" id="jadwal_mulai_221047" value="<?= $jadwal_mulai ?>" name="jadwal_mulai_221047" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="phone_221047" class="form-label">Jadwal Selesai</label>
-                      <input type="date" class="form-control" id="jadwal_selesai_221047" value="<?= $jadwal_selesai ?>" name="jadwal_selesai_221047" required>
+                      <label for="harga_221047" class="form-label">Harga</label>
+                      <input type="number" class="form-control" id="harga_221047" value="<?= $harga ?>" name="harga_221047" required>
                     </div>
                     <div class="mb-3">
                         <label for="status_221047" class="form-label">Status</label>
                         <select class="form-select" id="status_221047" name="status_221047" required>
                             <option value="" disabled>Pilih Status</option>
-                            <option value="Aktif" <?= ($status == "Aktif") ? 'selected' : '' ?>>Aktif</option>
-                            <option value="Nonaktif" <?= ($status == "Nonaktif") ? 'selected' : '' ?>>Nonaktif</option>
+                            <option value="aktif" <?= ($status == "aktif") ? 'selected' : '' ?>>Aktif</option>
+                            <option value="nonaktif" <?= ($status == "nonaktif") ? 'selected' : '' ?>>Nonaktif</option>
                             <!-- Tambahkan opsi lain sesuai kebutuhan -->
                         </select>
                     </div>

@@ -177,53 +177,83 @@ if($_SESSION['status'] != 'login'){
               <h5 class="card-title fw-semibold mb-4">Pembayaran</h5>
               <div class="card">
               <div class="table-responsive" data-simplebar>
-                  <table
-                    class="table table-borderless align-middle text-nowrap"
-                  >
-                    <thead>
-                      <tr>
+              <table class="table table-borderless align-middle text-nowrap">
+                <thead>
+                    <tr>
                         <th scope="col">No</th>
-                        <th scope="col">Nama Pembeli</th>
-                        <th scope="col">Jenis Pembelian</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Nama Siswa</th>
+                        <th scope="col">Nama Kelas</th>
+                        <th scope="col">Tanggal Daftar</th>
+                        <th scope="col">Status Bayar</th>
+                        <th scope="col">Status Aktif</th>
                         <th scope="col">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                    </tr>
+                </thead>
+                <tbody>
                     <?php
-                            $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM transaksi_221047");
-                            while($data = mysqli_fetch_array($tampil)):
-                        ?>
-                      <tr>
+                        $no = 1;
+                        $tampil = mysqli_query($koneksi, "
+                            SELECT 
+                                p.*,
+                                u.nama_lengkap_221047 as nama_siswa,
+                                k.nama_kelas_221047,
+                                k.harga_221047
+                            FROM pendaftaran_221047 p
+                            JOIN users_221047 u ON p.id_siswa_221047 = u.id_221047
+                            JOIN kelas_221047 k ON p.id_kelas_221047 = k.id_221047
+                            ORDER BY p.tanggal_daftar_221047 DESC
+                        ");
+                        while($data = mysqli_fetch_array($tampil)):
+                    ?>
+                    <tr>
                         <td>
-                          <p class="fs-3 fw-normal mb-0"><?= $no++ ?></p>
+                            <p class="fs-3 fw-normal mb-0"><?= $no++ ?></p>
                         </td>
                         <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['name_221047'] ?>
-                          </p>
+                            <p class="fs-3 fw-normal mb-0">
+                                <?= $data['nama_siswa'] ?>
+                            </p>
                         </td>
                         <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['role_221047'] ?>
-                          </p>
+                            <p class="fs-3 fw-normal mb-0">
+                                <?= $data['nama_kelas_221047'] ?>
+                                <br>
+                                <small class="text-muted">Rp <?= number_format($data['harga_221047'], 0, ',', '.') ?></small>
+                            </p>
                         </td>
                         <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
+                            <p class="fs-3 fw-normal mb-0">
+                                <?= date('d/m/Y', strtotime($data['tanggal_daftar_221047'])) ?>
+                            </p>
                         </td>
                         <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Hapus</a>
+                            <span class="badge bg-<?= ($data['status_bayar_221047'] == 'lunas') ? 'success' : 'warning' ?>">
+                                <?= ucfirst($data['status_bayar_221047']) ?>
+                            </span>
                         </td>
-                      </tr>
-                      <?php
-                            endwhile; 
-                        ?>
-                    </tbody>
-                  </table>
+                        <td>
+                            <span class="badge bg-<?= ($data['status_221047'] == 'aktif') ? 'success' : 'danger' ?>">
+                                <?= ucfirst($data['status_221047']) ?>
+                            </span>
+                        </td>
+                        <td>
+                            <?php if($data['status_bayar_221047'] == 'pending'): ?>
+                                <a onclick="return confirm('Apakah anda yakin ingin mengkonfirmasi pembayaran ini?')" class="btn btn-sm btn-primary" href="verifikasi.php?id=<?= $data['id_221047'] ?>">
+                                    Verifikasi
+                                </a>
+                            <?php endif; ?>
+                            <a class="btn btn-sm btn-info" href="detail.php?id=<?= $data['id_221047'] ?>">
+                                Detail
+                            </a>
+                            <a class="btn btn-sm btn-danger" href="hapus.php?id=<?= $data['id_221047'] ?>" 
+                              onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">
+                                Hapus
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
                 </div>
               </div>
             </div>

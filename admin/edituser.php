@@ -19,11 +19,10 @@ if(isset($_GET['hal'])){
         $data = mysqli_fetch_array($tampil);
         if($data){
             $id = $data['id_221047'];
-            $nama = $data['name_221047'];
+            $nama = $data['nama_lengkap_221047'];
             $email = $data['email_221047'];
-            $phone = $data['phone_221047'];
+            $phone = $data['no_hp_221047'];
             $role = $data['role_221047'];
-            $status = $data['status_221047'];
         }
     }
 }
@@ -33,11 +32,10 @@ if (isset($_POST['simpan'])) {
     $id = $_GET['id']; // Pastikan untuk mengambil ID dari URL
 
     // Ambil data dari form
-    $name = $_POST['name_221047'];
+    $name = $_POST['nama_lengkap_221047'];
     $email = $_POST['email_221047'];
-    $phone = $_POST['phone_221047'];
+    $phone = $_POST['no_hp_221047'];
     $role = $_POST['role_221047'];
-    $status = $_POST['status_221047'];
 
     // Cek apakah email sudah terdaftar, kecuali untuk pengguna yang sama
     $checkEmail = mysqli_query($koneksi, "SELECT * FROM users_221047 WHERE email_221047='$email' AND id_221047 != '$id'");
@@ -49,7 +47,7 @@ if (isset($_POST['simpan'])) {
               </script>";
     } else {
         // Update user data in the database
-        $update = mysqli_query($koneksi, "UPDATE users_221047 SET name_221047='$name', email_221047='$email', phone_221047='$phone', role_221047='$role', status_221047='$status' WHERE id_221047='$id'");
+        $update = mysqli_query($koneksi, "UPDATE users_221047 SET nama_lengkap_221047='$name', email_221047='$email', no_hp_221047='$phone', role_221047='$role' WHERE id_221047='$id'");
 
         if ($update) {
             echo "<script>
@@ -230,7 +228,7 @@ if (isset($_POST['simpan'])) {
                   <form method="POST">
                     <div class="mb-3">
                       <label for="name_221047" class="form-label">Nama</label>
-                      <input type="text" class="form-control" id="name_221047" value="<?= $nama ?>" name="name_221047" required>
+                      <input type="text" class="form-control" id="name_221047" value="<?= $nama ?>" name="nama_lengkap_221047" required>
                     </div>
                     <div class="mb-3">
                       <label for="email_221047" class="form-label">Email</label>
@@ -238,7 +236,7 @@ if (isset($_POST['simpan'])) {
                     </div>
                     <div class="mb-3">
                       <label for="phone_221047" class="form-label">Telepon</label>
-                      <input type="text" class="form-control" id="phone_221047" value="<?= $phone ?>" name="phone_221047" required>
+                      <input type="text" class="form-control" id="phone_221047" value="<?= $phone ?>" name="no_hp_221047" required>
                     </div>
                     <div class="mb-3">
                         <label for="role_221047" class="form-label">Role</label>
@@ -250,15 +248,7 @@ if (isset($_POST['simpan'])) {
                             <!-- Tambahkan opsi lain sesuai kebutuhan -->
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="status_221047" class="form-label">Status</label>
-                        <select class="form-select" id="status_221047" name="status_221047" required>
-                            <option value="" disabled <?php echo $status ? '' : 'selected'; ?>>Pilih Status</option>
-                            <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Aktif</option>
-                            <option value="inactive" <?php echo $status === 'inactive' ? 'selected' : ''; ?>>Nonaktif</option>
-                            <!-- Tambahkan opsi lain sesuai kebutuhan -->
-                        </select>
-                    </div>
+
                     <button type="submit" name="simpan" class="btn btn-primary">Edit</button>
                   </form>
                 </div>

@@ -1,3 +1,10 @@
+<?php
+  include 'koneksi.php';
+
+  session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,7 +43,7 @@
   ======================================================== -->
 </head>
 
-<body class="contact-page">
+<body class="courses-page">
 
 <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
@@ -65,98 +72,69 @@
 
     <!-- Page Title -->
     <div class="page-title" data-aos="fade">
-      <div class="heading">
+    <div class="heading">
         <div class="container">
-          <div class="row d-flex justify-content-center text-center">
+        <div class="row d-flex justify-content-center text-center">
             <div class="col-lg-8">
-              <h1>Contact</h1>
-              <p class="mb-0">Odio et unde deleniti. Deserunt numquam exercitationem. Officiis quo odio sint voluptas consequatur ut a odio voluptatem. Sit dolorum debitis veritatis natus dolores. Quasi ratione sint. Sit quaerat ipsum dolorem.</p>
+            <h1>Course Details</h1>
+            <p class="mb-0">Odio et unde deleniti. Deserunt numquam exercitationem. Officiis quo odio sint voluptas consequatur ut a odio voluptatem. Sit dolorum debitis veritatis natus dolores. Quasi ratione sint. Sit quaerat ipsum dolorem.</p>
             </div>
-          </div>
         </div>
-      </div>
-      <nav class="breadcrumbs">
+        </div>
+    </div>
+    <nav class="breadcrumbs">
         <div class="container">
-          <ol>
+        <ol>
             <li><a href="index.html">Home</a></li>
-            <li class="current">Contact</li>
-          </ol>
+            <li class="current">Course Details</li>
+        </ol>
         </div>
-      </nav>
+    </nav>
     </div><!-- End Page Title -->
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact section mt-5">
+    <!-- Courses Course Details Section -->
+    <section id="courses-course-details" class="courses-course-details section">
 
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="container" data-aos="fade-up">
 
-        <div class="row gy-4">
+        <div class="row">
+        <div class="col-lg-8">
+            <img src="assets/home/img/course-details.jpg" class="img-fluid" alt="">
+            <h3>Et enim incidunt fuga tempora</h3>
+            <p>
+            Qui et explicabo voluptatem et ab qui vero et voluptas. Sint voluptates temporibus quam autem. Atque nostrum voluptatum laudantium a doloremque enim et ut dicta. Nostrum ducimus est iure minima totam doloribus nisi ullam deserunt. Corporis aut officiis sit nihil est. Labore aut sapiente aperiam.
+            Qui voluptas qui vero ipsum ea voluptatem. Omnis et est. Voluptatem officia voluptatem adipisci et iusto provident doloremque consequatur. Quia et porro est. Et qui corrupti laudantium ipsa.
+            Eum quasi saepe aperiam qui delectus quaerat in. Vitae mollitia ipsa quam. Ipsa aut qui numquam eum iste est dolorum. Rem voluptas ut sit ut.
+            </p>
+        </div>
+        <div class="col-lg-4">
 
-          <div class="col-lg-4">
-            <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
-              <i class="bi bi-geo-alt flex-shrink-0"></i>
-              <div>
-                <h3>Jalan Perintis</h3>
-                <p>Makassar, Indonesia</p>
-              </div>
-            </div><!-- End Info Item -->
+            <div class="course-info d-flex justify-content-between align-items-center">
+            <h5>Pengajar</h5>
+            <p><a href="#">Walter White</a></p>
+            </div>
 
-            <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
-              <i class="bi bi-telephone flex-shrink-0"></i>
-              <div>
-                <h3>Call Us</h3>
-                <p>+62 853 55488 55</p>
-              </div>
-            </div><!-- End Info Item -->
+            <div class="course-info d-flex justify-content-between align-items-center">
+            <h5>Harga Kelas</h5>
+            <p>$165</p>
+            </div>
 
-            <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="500">
-              <i class="bi bi-envelope flex-shrink-0"></i>
-              <div>
-                <h3>Email Us</h3>
-                <p>bimbel@example.com</p>
-              </div>
-            </div><!-- End Info Item -->
+            <!-- <div class="course-info d-flex justify-content-between align-items-center">
+            <h5>Available Seats</h5>
+            <p>30</p>
+            </div> -->
 
-          </div>
-
-          <div class="col-lg-8">
-            <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
-              <div class="row gy-4">
-
-                <div class="col-md-6">
-                  <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
-                </div>
-
-                <div class="col-md-6 ">
-                  <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
-                </div>
-
-                <div class="col-md-12">
-                  <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
-                </div>
-
-                <div class="col-md-12">
-                  <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
-                </div>
-
-                <div class="col-md-12 text-center">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
-
-                  <button type="submit">Send Message</button>
-                </div>
-
-              </div>
-            </form>
-          </div><!-- End Contact Form -->
+            <div class="course-info d-flex justify-content-between align-items-center">
+            <h5>Jadwal</h5>
+            <p>5.00 pm - 7.00 pm</p>
+            </div>
 
         </div>
+        </div>
 
-      </div>
+    </div>
 
-    </section><!-- /Contact Section -->
-
+    </section><!-- /Courses Course Details Section -->
   </main>
 
   <footer id="footer" class="footer position-relative light-background">
@@ -164,14 +142,20 @@
     <div class="container footer-top">
       <div class="row gy-4">
         <div class="col-lg-4 col-md-6 footer-about">
-          <a href="index.php" class="logo d-flex align-items-center">
+          <a href="index.html" class="logo d-flex align-items-center">
             <span class="sitename">Mentor</span>
           </a>
           <div class="footer-contact pt-3">
-            <p>Jalan Perintis</p>
-            <p>Makassar, Indonesia</p>
-            <p class="mt-3"><strong>Phone:</strong> <span>+62 853 55488 55</span></p>
-            <p><strong>Email:</strong> <span>bimbel@example.com</span></p>
+            <p>A108 Adam Street</p>
+            <p>New York, NY 535022</p>
+            <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
+            <p><strong>Email:</strong> <span>info@example.com</span></p>
+          </div>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
           </div>
         </div>
 

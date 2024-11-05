@@ -165,9 +165,6 @@
                   </span>
                 </div>
                 <div class="trainer-rank d-flex align-items-center">
-                  <i class="bi bi-calendar-check"></i>&nbsp;
-                  <?php echo date('d/m/Y', strtotime($data['created_at_221047'])); ?>
-                  &nbsp;&nbsp;
                   <i class="bi bi-check-circle<?php echo ($data['status_221047'] == 1) ? '-fill' : ''; ?>"></i>&nbsp;
                   <?php echo ($data['status_221047'] == 'aktif') ? 'aktif' : 'nonaktif'; ?>
                 </div>

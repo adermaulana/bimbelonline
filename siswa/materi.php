@@ -213,7 +213,7 @@ if ($_SESSION['role_admin'] != 'siswa') {
                                     <td><?= $data['deskripsi_221047'] ?></td>
                                     <td><?= date('d/m/Y H:i', strtotime($data['created_at_221047'])) ?></td>
                                     <td>
-                                        <a href="materi/<?= $data['file_materi_221047'] ?>" 
+                                        <a href="../pengajar/materi/<?= $data['file_materi_221047'] ?>" 
                                            class="btn btn-sm btn-success" 
                                            target="_blank">
                                             Download

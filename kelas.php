@@ -57,7 +57,7 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="index.php" class="active">Home<br></a></li>
-          <li><a href="materi.php">Materi</a></li>
+          <li><a href="kelas.php">Kelas</a></li>
           <li><a href="kontak.php">Kontak</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -105,7 +105,7 @@
                                                               FROM kelas_221047 
                                                               INNER JOIN users_221047 
                                                               ON kelas_221047.id_pengajar_221047 = users_221047.id_221047
-                                                              WHERE role_221047 = 'pengajar' 
+                                                              WHERE users_221047.role_221047 = 'pengajar'
                                                               ORDER BY nama_kelas_221047 ASC");
                             while($data = mysqli_fetch_array($tampil)):
                         ?>

@@ -50,7 +50,7 @@
             $admin_data = mysqli_fetch_assoc($login);
             // Simpan data ke dalam session
             $_SESSION['id_admin'] = $admin_data['id_221047']; // Pastikan sesuai dengan nama kolom di database
-            $_SESSION['nama_admin'] = $admin_data['name_221047']; // Pastikan sesuai dengan nama kolom di database
+            $_SESSION['nama_admin'] = $admin_data['nama_lengkap_221047']; // Pastikan sesuai dengan nama kolom di database
             $_SESSION['email_admin'] = $email;
             $_SESSION['role_admin'] = $admin_data['role_221047'];
             $_SESSION['status'] = "login";
@@ -62,7 +62,7 @@
           $admin_data = mysqli_fetch_assoc($loginPengajar);
           // Simpan data ke dalam session
           $_SESSION['id_admin'] = $admin_data['id_221047']; // Pastikan sesuai dengan nama kolom di database
-          $_SESSION['nama_admin'] = $admin_data['name_221047']; // Pastikan sesuai dengan nama kolom di database
+          $_SESSION['nama_admin'] = $admin_data['nama_lengkap_221047']; // Pastikan sesuai dengan nama kolom di database
           $_SESSION['email_admin'] = $email;
           $_SESSION['role_admin'] = $admin_data['role_221047'];
           $_SESSION['status'] = "login";
@@ -73,7 +73,7 @@
         $admin_data = mysqli_fetch_assoc($loginSiswa);
         // Simpan data ke dalam session
         $_SESSION['id_admin'] = $admin_data['id_221047']; // Pastikan sesuai dengan nama kolom di database
-        $_SESSION['nama_admin'] = $admin_data['name_221047']; // Pastikan sesuai dengan nama kolom di database
+        $_SESSION['nama_admin'] = $admin_data['nama_lengkap_221047']; // Pastikan sesuai dengan nama kolom di database
         $_SESSION['email_admin'] = $email;
         $_SESSION['role_admin'] = $admin_data['role_221047'];
         $_SESSION['status'] = "login";

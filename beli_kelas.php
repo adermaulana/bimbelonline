@@ -3,7 +3,20 @@
 
   session_start();
 
+  if(isset($_SESSION['status']) != 'login'){
+
+    session_unset();
+    session_destroy();
+
+    echo "<script>
+    alert('Login terlebih dahulu untuk pesan!');
+    document.location='login.php';
+         </script>";
+
+}
+
   $id_materi = $_GET['id'];
+  $id_siswa = $_SESSION['id_admin'];
 
   $query = mysqli_query($koneksi, "SELECT kelas_221047.*, users_221047.nama_lengkap_221047
                                  FROM kelas_221047 
@@ -92,8 +105,8 @@ if (!$data) {
         <div class="container">
             <div class="row d-flex justify-content-center text-center">
                 <div class="col-lg-8">
-                    <h1>Detail Materi</h1>
-                    <p class="mb-0">Temukan penjelasan mendalam, panduan praktis, dan wawasan terbaru untuk memahami konsep ini dengan lebih baik. Jelajahi materi secara detail agar lebih mudah dipahami dan diterapkan dalam konteks nyata.</p>
+                    <h1>Beli Kelas</h1>
+                    <p class="mb-0"><?= $data['nama_kelas_221047'] ?></p>
                 </div>
             </div>
         </div>
@@ -111,32 +124,42 @@ if (!$data) {
 
     <section id="courses-course-details" class="courses-course-details section">
     <div class="container" data-aos="fade-up">
-        <div class="row">
-            <div class="col-lg-8">
-                <img src="assets/home/img/course-details.jpg" class="img-fluid" alt="">
-                <h3><?= $data['nama_kelas_221047'] ?></h3>
-                <p><?= $data['deskripsi_221047'] ?></p>
-            </div>
-            <div class="col-lg-4">
-                <div class="course-info d-flex justify-content-between align-items-center">
-                    <h5>Pengajar</h5>
-                    <p><a href="#"><?= $data['nama_lengkap_221047'] ?></a></p>
+            <div class="row">
+                <div class="col-lg-8">
+                    <img src="assets/home/img/course-details.jpg" class="img-fluid" alt="">
+                    <h3><?= $data['nama_kelas_221047'] ?></h3>
+                    <p><?= $data['deskripsi_221047'] ?></p>
                 </div>
+                <div class="col-lg-4">
+                    <div class="course-info d-flex justify-content-between align-items-center">
+                        <h5>Pengajar</h5>
+                        <p><?= $data['nama_lengkap_221047'] ?></p>
+                    </div>
 
-                <div class="course-info d-flex justify-content-between align-items-center">
-                    <h5>Harga Kelas</h5>
-                    <p>Rp <?= number_format($data['harga_221047'], 0, ',', '.'); ?></p>
-                </div>
+                    <div class="course-info d-flex justify-content-between align-items-center">
+                        <h5>Harga</h5>
+                        <p>Rp <?= number_format($data['harga_221047'], 0, ',', '.'); ?></p>
+                    </div>
 
-                <!-- Tambahkan tombol Beli Kelas -->
-                <div class="text-center mt-4">
-                    <a href="beli_kelas.php?id=<?= $data['id_221047']; ?>" class="btn btn-primary btn-lg">
-                        Beli Kelas
-                    </a>
+                    <div class="course-info d-flex justify-content-between align-items-center">
+                        <h5>Nama Pembeli</h5>
+                        <p><?= $_SESSION['nama_admin'] ?></p>
+                    </div>
+
+
+                    <!-- Tambahkan tombol konfirmasi pembelian -->
+                    <div class="text-center mt-4">
+                        <form action="proses_beli.php" method="POST">
+                            <input type="hidden" name="id_siswa" value="<?= $id_siswa ?>">
+                            <input type="hidden" name="id_kelas" value="<?= $data['id_221047'] ?>">
+                            <input type="hidden" name="harga" value="<?= $data['harga_221047'] ?>">
+                            <button type="submit" class="btn btn-primary btn-lg">Konfirmasi Pembelian</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </section>
   </main>
 

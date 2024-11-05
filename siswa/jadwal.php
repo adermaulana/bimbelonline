@@ -4,6 +4,8 @@ include '../koneksi.php';
 
 session_start();
 
+$id_siswa = $_SESSION['id_admin'];
+
 if($_SESSION['status'] != 'login'){
 
     session_unset();
@@ -66,6 +68,18 @@ if ($_SESSION['role_admin'] != 'siswa') {
                 <span class="hide-menu ms-2 ps-1">Dashboard</span>
               </a>
             </li>
+            <li class="sidebar-item">
+              <a
+                class="sidebar-link sidebar-link primary-hover-bg"
+                href="../kelas.php"
+                aria-expanded="false"
+              >
+                <span class="aside-icon p-2 bg-light-primary rounded-3">
+                  <i class="ti ti-layout-dashboard fs-7 text-primary"></i>
+                </span>
+                <span class="hide-menu ms-2 ps-1">Beli Kelas</span>
+              </a>
+            </li>
             <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-5"></i>
               <span class="hide-menu">Fitur</span>
@@ -85,13 +99,13 @@ if ($_SESSION['role_admin'] != 'siswa') {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="materi.php"
+                href="jadwal.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Materi</span>
+                <span class="hide-menu ms-2 ps-1">Data Jadwal</span>
               </a>
             </li>
             <!-- <li class="sidebar-item">
@@ -167,64 +181,45 @@ if ($_SESSION['role_admin'] != 'siswa') {
         <div class="container-fluid">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Ujian</h5>
+              <h5 class="card-title fw-semibold mb-4">Jadwal</h5>
+              <a class="btn btn-success mb-2" href="tambahjadwal.php">Tambah Data</a>
               <div class="card">
               <div class="table-responsive" data-simplebar>
-                  <table
-                    class="table table-borderless align-middle text-nowrap"
-                  >
-                    <thead>
-                      <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Nama Ujian</th>
-                        <th scope="col">Kelas</th>
-                        <th scope="col">Deskripsi</th>
-                        <th scope="col">Mulai</th>
-                        <th scope="col">Selesai</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+              <table class="table table-borderless align-middle">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Kelas</th>
+                        <th>Hari</th>
+                        <th>Jam</th>
+                        <th>Link Meet</th>
+                    </tr>
+                </thead>
+                <tbody>
                     <?php
-                            $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM kelas_221047");
-                            while($data = mysqli_fetch_array($tampil)):
-                        ?>
-                      <tr>
+                    $no = 1;
+                    $query = mysqli_query($koneksi, "SELECT pendaftaran_221047.*, kelas_221047.*, jadwal_221047.* 
+                                                    FROM pendaftaran_221047 
+                                                    INNER JOIN kelas_221047 ON pendaftaran_221047.id_kelas_221047 = kelas_221047.id_221047
+                                                    INNER JOIN jadwal_221047 ON kelas_221047.id_221047 = jadwal_221047.id_kelas_221047
+                                                    WHERE pendaftaran_221047.id_siswa_221047 = '$id_siswa' 
+                                                    AND pendaftaran_221047.status_bayar_221047 = 'lunas'");
+                    while($data = mysqli_fetch_array($query)):
+                    ?>
+                    <tr>
+                        <td><?= $no++ ?></td>
+                        <td><?= $data['nama_kelas_221047'] ?></td>
+                        <td><?= $data['hari_221047'] ?></td>
+                        <td><?= $data['jam_mulai_221047'] ?> - <?= $data['jam_selesai_221047'] ?> WITA</td>
                         <td>
-                          <p class="fs-3 fw-normal mb-0"><?= $no++ ?></p>
+                            <a href="<?= $data['link_meet_221047'] ?>" target="_blank" class="btn btn-sm btn-primary">
+                                Join Meet
+                            </a>
                         </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['name_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['role_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Hapus</a>
-                        </td>
-                      </tr>
-                      <?php
-                            endwhile; 
-                        ?>
-                    </tbody>
-                  </table>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
                 </div>
               </div>
             </div>

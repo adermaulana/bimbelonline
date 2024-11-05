@@ -130,7 +130,7 @@ if (isset($_POST['simpan'])) {
                 <span class="hide-menu ms-2 ps-1">Data Pembayaran</span>
               </a>
             </li>
-            <li class="sidebar-item">
+            <!-- <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link primary-hover-bg"
                 href="sistem.php"
@@ -141,7 +141,7 @@ if (isset($_POST['simpan'])) {
                 </span>
                 <span class="hide-menu ms-2 ps-1">Sistem Aplikasi</span>
               </a>
-            </li>
+            </li> -->
 
           </ul>
 

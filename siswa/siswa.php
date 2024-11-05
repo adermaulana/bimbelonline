@@ -6,9 +6,9 @@ session_start();
 
 $id_siswa = $_SESSION['id_admin'];
 $id_kelas = $_GET['id_kelas'];
-
 $query_kelas = mysqli_query($koneksi, "SELECT nama_kelas_221047 FROM kelas_221047 WHERE id_221047 = '$id_kelas'");
 $data_kelas = mysqli_fetch_assoc($query_kelas);
+
 
 if($_SESSION['status'] != 'login'){
 
@@ -186,51 +186,117 @@ if ($_SESSION['role_admin'] != 'siswa') {
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="card-title fw-semibold">Materi Kelas: <?= $data_kelas['nama_kelas_221047'] ?></h5>
+                        <h5 class="card-title fw-semibold">Daftar Siswa Kelas: <?= $data_kelas['nama_kelas_221047'] ?></h5>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-borderless align-middle">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Judul Materi</th>
-                                    <th>Deskripsi</th>
-                                    <th>Tanggal Upload</th>
-                                    <th>File</th>
+                                    <th>Nama Siswa</th>
+                                    <th>Email</th>
+                                    <th>No. HP</th>
+                                    <th>Tanggal Bergabung</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 $no = 1;
-                                $query = mysqli_query($koneksi, "SELECT * FROM materi_221047 
-                                                               WHERE id_kelas_221047 = '$id_kelas' 
-                                                               ORDER BY created_at_221047 DESC");
+                                $query = mysqli_query($koneksi, "SELECT 
+                                                                  users_221047.nama_lengkap_221047,
+                                                                  users_221047.email_221047,
+                                                                  users_221047.no_hp_221047,
+                                                                  pendaftaran_221047.status_bayar_221047,
+                                                                  pendaftaran_221047.status_221047,
+                                                                  pendaftaran_221047.tanggal_daftar_221047,
+                                                                  pendaftaran_221047.id_221047
+                                                               FROM 
+                                                                  pendaftaran_221047
+                                                               JOIN 
+                                                                  users_221047 ON pendaftaran_221047.id_siswa_221047 = users_221047.id_221047
+                                                               WHERE 
+                                                                  pendaftaran_221047.id_kelas_221047 = '$id_kelas'
+                                                               ORDER BY 
+                                                                  pendaftaran_221047.tanggal_daftar_221047 DESC");
                                 while($data = mysqli_fetch_array($query)):
                                 ?>
                                 <tr>
                                     <td><?= $no++ ?></td>
-                                    <td><?= $data['judul_221047'] ?></td>
-                                    <td><?= $data['deskripsi_221047'] ?></td>
-                                    <td><?= date('d/m/Y H:i', strtotime($data['created_at_221047'])) ?></td>
-                                    <td>
-                                        <a href="materi/<?= $data['file_materi_221047'] ?>" 
-                                           class="btn btn-sm btn-success" 
-                                           target="_blank">
-                                            Download
-                                        </a>
-                                    </td>
+                                    <td><?= $data['nama_lengkap_221047'] ?></td>
+                                    <td><?= $data['email_221047'] ?></td>
+                                    <td><?= $data['no_hp_221047'] ?></td>
+                                    <td><?= date('d/m/Y', strtotime($data['tanggal_daftar_221047'])) ?></td>
                                 </tr>
                                 <?php endwhile; ?>
 
                                 <?php if(mysqli_num_rows($query) == 0): ?>
                                 <tr>
-                                    <td colspan="6" class="text-center">Belum ada materi</td>
+                                    <td colspan="7" class="text-center">Belum ada siswa yang terdaftar</td>
                                 </tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
-                    <a href="kelas.php" class="btn btn-secondary">Kembali</a>
+                </div>
+            </div>
+            
+            <!-- Card Ringkasan -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-4">Ringkasan Kelas</h5>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2">Total Siswa</h6>
+                                    <?php
+                                    $query_total = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM pendaftaran_221047 WHERE id_kelas_221047 = '$id_kelas'");
+                                    $total_siswa = mysqli_fetch_assoc($query_total)['total'];
+                                    ?>
+                                    <h4 class="card-text"><?= $total_siswa ?> Siswa</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2">Siswa Aktif</h6>
+                                    <?php
+                                    $query_aktif = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM pendaftaran_221047 WHERE id_kelas_221047 = '$id_kelas' AND status_221047 = 'aktif'");
+                                    $siswa_aktif = mysqli_fetch_assoc($query_aktif)['total'];
+                                    ?>
+                                    <h4 class="card-text"><?= $siswa_aktif ?> Siswa</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2">Sudah Bayar</h6>
+                                    <?php
+                                    $query_lunas = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM pendaftaran_221047 WHERE id_kelas_221047 = '$id_kelas' AND status_bayar_221047 = 'lunas'");
+                                    $siswa_lunas = mysqli_fetch_assoc($query_lunas)['total'];
+                                    ?>
+                                    <h4 class="card-text"><?= $siswa_lunas ?> Siswa</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2">Belum Bayar</h6>
+                                    <?php
+                                    $query_belum = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM pendaftaran_221047 WHERE id_kelas_221047 = '$id_kelas' AND status_bayar_221047 = 'pending'");
+                                    $siswa_belum = mysqli_fetch_assoc($query_belum)['total'];
+                                    ?>
+                                    <h4 class="card-text"><?= $siswa_belum ?> Siswa</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <a href="kelas.php" class="btn btn-secondary">Kembali</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

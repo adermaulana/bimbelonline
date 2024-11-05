@@ -56,7 +56,22 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="login.php">Login</a>
+      <?php if($isLoggedIn): ?>
+                <?php if(isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'admin'): ?>
+                  <a class="btn-getstarted" href="admin">Dashboard</a>
+                  <a class="btn-getstarted" href="login.php">Logout</a>
+                </nav>
+                <?php elseif(isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'pengajar'): ?>
+                  <a class="btn-getstarted" href="pengajar">Dashboard</a>
+                  <a class="btn-getstarted" href="login.php">Logout</a>
+                </nav>
+                <?php else: ?>
+                    <a class="btn-getstarted" href="siswa">Dashboard</a>
+                    <a class="btn-getstarted" href="login.php">Logout</a>
+                <?php endif; ?>
+                <?php else: ?>
+                  <a class="btn-getstarted" href="login.php">Login</a>
+                <?php endif; ?>
 
     </div>
   </header>

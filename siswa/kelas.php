@@ -4,6 +4,8 @@ include '../koneksi.php';
 
 session_start();
 
+$id_siswa = $_SESSION['id_admin'];
+
 if($_SESSION['status'] != 'login'){
 
     session_unset();
@@ -66,6 +68,18 @@ if ($_SESSION['role_admin'] != 'siswa') {
                 <span class="hide-menu ms-2 ps-1">Dashboard</span>
               </a>
             </li>
+            <li class="sidebar-item">
+              <a
+                class="sidebar-link sidebar-link primary-hover-bg"
+                href="../kelas.php"
+                aria-expanded="false"
+              >
+                <span class="aside-icon p-2 bg-light-primary rounded-3">
+                  <i class="ti ti-layout-dashboard fs-7 text-primary"></i>
+                </span>
+                <span class="hide-menu ms-2 ps-1">Beli Kelas</span>
+              </a>
+            </li>
             <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-5"></i>
               <span class="hide-menu">Fitur</span>
@@ -85,13 +99,13 @@ if ($_SESSION['role_admin'] != 'siswa') {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="materi.php"
+                href="jadwal.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Materi</span>
+                <span class="hide-menu ms-2 ps-1">Data Jadwal</span>
               </a>
             </li>
             <!-- <li class="sidebar-item">
@@ -177,14 +191,18 @@ if ($_SESSION['role_admin'] != 'siswa') {
                       <tr>
                         <th scope="col">No</th>
                         <th scope="col">Nama Kelas</th>
-                        <th scope="col">Pengajar</th>
-                        <th scope="col">Aksi</th>
+                        <th scope="col">Harga</th>
+                        <th scope="col">Status</th>
                       </tr>
                     </thead>
                     <tbody>
                     <?php
                             $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT * FROM transaksi_221047");
+                            $tampil = mysqli_query($koneksi, "SELECT pendaftaran_221047.*, kelas_221047.* 
+                                                              FROM pendaftaran_221047 
+                                                              INNER JOIN kelas_221047 ON pendaftaran_221047.id_kelas_221047 = kelas_221047.id_221047
+                                                              WHERE pendaftaran_221047.id_siswa_221047 = '$id_siswa' 
+                                                              AND pendaftaran_221047.status_bayar_221047 = 'lunas'");
                             while($data = mysqli_fetch_array($tampil)):
                         ?>
                       <tr>
@@ -193,27 +211,26 @@ if ($_SESSION['role_admin'] != 'siswa') {
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['name_221047'] ?>
+                          <?= $data['nama_kelas_221047'] ?>
                           </p>
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['role_221047'] ?>
+                            Rp <?= number_format($data['harga_221047'], 0, ',', '.') ?>
                           </p>
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
+                          <?php if ($data['status_221047'] == 'aktif'): ?>
+                            <span class="badge bg-success">Aktif</span>
+                          <?php else: ?>
+                            <span class="badge bg-danger">Nonaktif</span>
+                          <?php endif; ?>
                           </p>
                         </td>
                         <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['status_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Hapus</a>
+                            <a class="btn btn-sm btn-success" href="siswa.php?id_kelas=<?= $data['id_221047']?>">Lihat Siswa</a>
+                            <a class="btn btn-sm btn-info"href="materi.php?id_kelas=<?= $data['id_221047']?>">Lihat Materi</a>
                         </td>
                       </tr>
                       <?php

@@ -4,6 +4,8 @@ include '../koneksi.php';
 
 session_start();
 
+$id_siswa = $_SESSION['id_admin'];
+
 if($_SESSION['status'] != 'login'){
 
     session_unset();
@@ -97,13 +99,13 @@ if ($_SESSION['role_admin'] != 'siswa') {
             <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link danger-hover-bg"
-                href="materi.php"
+                href="jadwal.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-danger rounded-3">
                   <i class="ti ti-alert-circle fs-7 text-danger"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Data Materi</span>
+                <span class="hide-menu ms-2 ps-1">Data Jadwal</span>
               </a>
             </li>
             <!-- <li class="sidebar-item">
@@ -178,79 +180,20 @@ if ($_SESSION['role_admin'] != 'siswa') {
       <div class="container-fluid">
         <!--  Row 1 -->
         <div class="row">
-          <div class="col-lg-12">
-            <div class="row">
-              <div class="col-lg-6 col-sm-6">
-                <!-- Yearly Breakup -->
-                <div class="card overflow-hidden">
-                  <div class="card-body p-4">
-                    <h5 class="card-title mb-10 fw-semibold">Total Kelas</h5>
-                    <div class="row align-items-center">
-                      <div class="col-7">
-                        <h4 class="fw-semibold mb-3">12</h4>
-                        <div class="d-flex align-items-center mb-2">
-                          <span
-                            class="me-1 rounded-circle bg-light-success round-20 d-flex align-items-center justify-content-center">
-                            <i class="ti ti-arrow-up-left text-success"></i>
-                          </span>
-                          <p class="text-dark me-1 fs-3 mb-0">+9%</p>
-                          <p class="fs-3 mb-0">last year</p>
-                        </div>
-                        <div class="d-flex align-items-center">
-                          <div class="me-3">
-                            <span class="round-8 bg-primary rounded-circle me-2 d-inline-block"></span>
-                            <span class="fs-2">Oragnic</span>
-                          </div>
-                          <div>
-                            <span class="round-8 bg-danger rounded-circle me-2 d-inline-block"></span>
-                            <span class="fs-2">Refferal</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-5">
-                        <div class="d-flex justify-content-center">
-                          <div id="grade"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-6 col-sm-6">
-                <!-- Monthly Earnings -->
-                <div class="card">
+        <div class="col-md-3">
+              <div class="card">
                   <div class="card-body">
-                    <div class="row alig n-items-start">
-                      <div class="col-8">
-                        <h5 class="card-title mb-10 fw-semibold">Total Materi</h5>
-                        <h4 class="fw-semibold mb-3">1000</h4>
-                        <div class="d-flex align-items-center pb-1">
-                          <span
-                            class="me-2 rounded-circle bg-light-danger round-20 d-flex align-items-center justify-content-center">
-                            <i class="ti ti-arrow-down-right text-danger"></i>
-                          </span>
-                          <p class="text-dark me-1 fs-3 mb-0">+9%</p>
-                          <p class="fs-3 mb-0">last year</p>
-                        </div>
-                      </div>
-                      <div class="col-4">
-                        <div class="d-flex justify-content-end">
-                          <div
-                            class="text-white bg-danger rounded-circle p-7 d-flex align-items-center justify-content-center">
-                            <i class="ti ti-currency-dollar fs-6"></i>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                      <h5 class="card-title">Total Kelas Dibeli</h5>
+                      <?php
+                      $query_kelas = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM pendaftaran_221047 
+                                                            WHERE id_siswa_221047 = '$id_siswa' 
+                                                            AND status_bayar_221047 = 'lunas'");
+                      $total_kelas = mysqli_fetch_assoc($query_kelas)['total'];
+                      ?>
+                      <h2><?= $total_kelas ?></h2>
                   </div>
-                  <div id="earning"></div>
-                </div>
               </div>
-            </div>
           </div>
-        </div>
-        <div class="py-6 px-6 text-center">
-          <p class="mb-0 fs-4">Design and Developed by <a href="https://adminmart.com/" target="_blank" class="pe-1 text-primary text-decoration-underline">AdminMart.com</a></p>
         </div>
       </div>
     </div>

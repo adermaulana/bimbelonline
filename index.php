@@ -1,3 +1,25 @@
+<?php
+
+include 'koneksi.php';
+
+session_start();
+
+
+if (isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'admin') {
+  $isLoggedIn = true;
+  $namaAdmin = $_SESSION['nama_admin']; // Ambil nama admin dari session
+} elseif (isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'pengajar') {
+  $isLoggedIn = true;
+  $namaPelanggan = $_SESSION['nama_admin']; // Ambil nama pengajar dari session
+} elseif (isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'siswa') {
+  $isLoggedIn = true;
+  $namaPelanggan = $_SESSION['nama_admin']; // Ambil nama siswa dari session
+} else {
+  $isLoggedIn = false;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,7 +78,23 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="login.php">Login</a>
+      
+      <?php if($isLoggedIn): ?>
+                <?php if(isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'admin'): ?>
+                  <a class="btn-getstarted" href="admin">Dashboard</a>
+                  <a class="btn-getstarted" href="logout.php">Logout</a>
+                </nav>
+                <?php elseif(isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'pengajar'): ?>
+                  <a class="btn-getstarted" href="pengajar">Dashboard</a>
+                  <a class="btn-getstarted" href="logout.php">Logout</a>
+                </nav>
+                <?php else: ?>
+                    <a class="btn-getstarted" href="siswa">Dashboard</a>
+                    <a class="btn-getstarted" href="logout.php">Logout</a>
+                <?php endif; ?>
+                <?php else: ?>
+                  <a class="btn-getstarted" href="login.php">Login</a>
+                <?php endif; ?>
 
     </div>
   </header>
@@ -183,83 +221,58 @@
 
         <div class="row">
 
-          <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
-            <div class="course-item">
-              <img src="assets/home/img/course-1.jpg" class="img-fluid" alt="...">
-              <div class="course-content">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <p class="category">Web Development</p>
-                  <p class="price">$169</p>
-                </div>
+        <?php
+                            $no = 1;
+                            $tampil = mysqli_query($koneksi, "SELECT kelas_221047.*, users_221047.nama_lengkap_221047 
+                                                              FROM kelas_221047 
+                                                              INNER JOIN users_221047 
+                                                              ON kelas_221047.id_pengajar_221047 = users_221047.id_221047
+                                                              WHERE users_221047.role_221047 = 'pengajar'
+                                                              ORDER BY nama_kelas_221047 ASC");
+                            while($data = mysqli_fetch_array($tampil)):
+                        ?>
 
-                <h3><a href="course-details.html">Website Design</a></h3>
-                <p class="description">Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.</p>
-                <div class="trainer d-flex justify-content-between align-items-center">
-                  <div class="trainer-profile d-flex align-items-center">
-                    <img src="assets/home/img/trainers/trainer-1-2.jpg" class="img-fluid" alt="">
-                    <a href="" class="trainer-link">Antonio</a>
-                  </div>
-                  <div class="trainer-rank d-flex align-items-center">
-                    <i class="bi bi-person user-icon"></i>&nbsp;50
-                    &nbsp;&nbsp;
-                    <i class="bi bi-heart heart-icon"></i>&nbsp;65
-                  </div>
+        <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+          <div class="course-item">
+            <a href="detail_materi.php?id=<?php echo $data['id_221047']; ?>">
+              <img src="assets/home/img/course-1.jpg" class="img-fluid" alt="Course Image">
+            </a>
+            <div class="course-content">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <p class="category">ID: <?php echo $data['id_221047']; ?></p>
+                <p class="price">Rp <?php echo number_format($data['harga_221047'], 0, ',', '.'); ?></p>
+              </div>
+
+              <h3><a href="detail_materi.php?id=<?php echo $data['id_221047']; ?>">
+                <?php echo $data['nama_kelas_221047']; ?>
+              </a></h3>
+              
+              <p class="description"><?php echo $data['deskripsi_221047']; ?></p>
+              
+              <div class="trainer d-flex justify-content-between align-items-center">
+                <div class="trainer-profile d-flex align-items-center">
+                  <img src="assets/home/img/trainers/trainer-1-2.jpg" class="img-fluid" alt="Trainer">
+                  <span class="trainer-link">
+                    <?php 
+                      echo $data['nama_lengkap_221047']; 
+                    ?>
+                  </span>
+                </div>
+                <div class="trainer-rank d-flex align-items-center">
+                  <i class="bi bi-calendar-check"></i>&nbsp;
+                  <?php echo date('d/m/Y', strtotime($data['created_at_221047'])); ?>
+                  &nbsp;&nbsp;
+                  <i class="bi bi-check-circle<?php echo ($data['status_221047'] == 1) ? '-fill' : ''; ?>"></i>&nbsp;
+                  <?php echo ($data['status_221047'] == 'aktif') ? 'aktif' : 'nonaktif'; ?>
                 </div>
               </div>
             </div>
-          </div> <!-- End Course Item-->
+          </div>
+        </div>
 
-          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
-            <div class="course-item">
-              <img src="assets/home/img/course-2.jpg" class="img-fluid" alt="...">
-              <div class="course-content">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <p class="category">Marketing</p>
-                  <p class="price">$250</p>
-                </div>
-
-                <h3><a href="course-details.html">Search Engine Optimization</a></h3>
-                <p class="description">Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.</p>
-                <div class="trainer d-flex justify-content-between align-items-center">
-                  <div class="trainer-profile d-flex align-items-center">
-                    <img src="assets/home/img/trainers/trainer-2-2.jpg" class="img-fluid" alt="">
-                    <a href="" class="trainer-link">Lana</a>
-                  </div>
-                  <div class="trainer-rank d-flex align-items-center">
-                    <i class="bi bi-person user-icon"></i>&nbsp;35
-                    &nbsp;&nbsp;
-                    <i class="bi bi-heart heart-icon"></i>&nbsp;42
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> <!-- End Course Item-->
-
-          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="300">
-            <div class="course-item">
-              <img src="assets/home/img/course-3.jpg" class="img-fluid" alt="...">
-              <div class="course-content">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <p class="category">Content</p>
-                  <p class="price">$180</p>
-                </div>
-
-                <h3><a href="course-details.html">Copywriting</a></h3>
-                <p class="description">Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.</p>
-                <div class="trainer d-flex justify-content-between align-items-center">
-                  <div class="trainer-profile d-flex align-items-center">
-                    <img src="assets/home/img/trainers/trainer-3-2.jpg" class="img-fluid" alt="">
-                    <a href="" class="trainer-link">Brandon</a>
-                  </div>
-                  <div class="trainer-rank d-flex align-items-center">
-                    <i class="bi bi-person user-icon"></i>&nbsp;20
-                    &nbsp;&nbsp;
-                    <i class="bi bi-heart heart-icon"></i>&nbsp;85
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> <!-- End Course Item-->
+        <?php
+                            endwhile;
+                        ?>
 
         </div>
 
@@ -274,11 +287,23 @@
 
         <div class="row">
 
+        <?php
+                            $no = 1;
+                            $tampil = mysqli_query($koneksi, "SELECT id_221047,
+                                                                    nama_lengkap_221047,
+                                                                    role_221047,
+                                                                    no_hp_221047,
+                                                                    created_at_221047
+                                                              FROM users_221047
+                                                              WHERE role_221047 = 'pengajar'");
+                            while($data = mysqli_fetch_array($tampil)):
+                        ?>
+
           <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
             <div class="member">
               <img src="assets/home/img/trainers/trainer-1.jpg" class="img-fluid" alt="">
               <div class="member-content">
-                <h4>Walter White</h4>
+                <h4><?= $data['nama_lengkap_221047'] ?></h4>
                 <span>Web Development</span>
                 <p>
                   Magni qui quod omnis unde et eos fuga et exercitationem. Odio veritatis perspiciatis quaerat qui aut aut aut
@@ -287,37 +312,9 @@
             </div>
           </div><!-- End Team Member -->
 
-          <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="200">
-            <div class="member">
-              <img src="assets/home/img/trainers/trainer-2.jpg" class="img-fluid" alt="">
-              <div class="member-content">
-                <h4>Sarah Jhinson</h4>
-                <span>Marketing</span>
-                <p>
-                  Repellat fugiat adipisci nemo illum nesciunt voluptas repellendus. In architecto rerum rerum temporibus
-                </p>
-              </div>
-            </div>
-          </div><!-- End Team Member -->
-
-          <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="300">
-            <div class="member">
-              <img src="assets/home/img/trainers/trainer-3.jpg" class="img-fluid" alt="">
-              <div class="member-content">
-                <h4>William Anderson</h4>
-                <span>Content</span>
-                <p>
-                  Voluptas necessitatibus occaecati quia. Earum totam consequuntur qui porro et laborum toro des clara
-                </p>
-                <div class="social">
-                  <a href=""><i class="bi bi-twitter-x"></i></a>
-                  <a href=""><i class="bi bi-facebook"></i></a>
-                  <a href=""><i class="bi bi-instagram"></i></a>
-                  <a href=""><i class="bi bi-linkedin"></i></a>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Team Member -->
+          <?php
+                            endwhile;
+                        ?>
 
         </div>
 

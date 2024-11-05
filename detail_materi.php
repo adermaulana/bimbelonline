@@ -3,6 +3,19 @@
 
   session_start();
 
+  if (isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'admin') {
+    $isLoggedIn = true;
+    $namaAdmin = $_SESSION['nama_admin']; // Ambil nama admin dari session
+  } elseif (isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'pengajar') {
+    $isLoggedIn = true;
+    $namaPelanggan = $_SESSION['nama_admin']; // Ambil nama pengajar dari session
+  } elseif (isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'siswa') {
+    $isLoggedIn = true;
+    $namaPelanggan = $_SESSION['nama_admin']; // Ambil nama siswa dari session
+  } else {
+    $isLoggedIn = false;
+  }
+
   $id_materi = $_GET['id'];
 
   $query = mysqli_query($koneksi, "SELECT kelas_221047.*, users_221047.nama_lengkap_221047
@@ -79,7 +92,22 @@ if (!$data) {
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="login.php">Login</a>
+      <?php if($isLoggedIn): ?>
+                <?php if(isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'admin'): ?>
+                  <a class="btn-getstarted" href="admin">Dashboard</a>
+                  <a class="btn-getstarted" href="logout.php">Logout</a>
+                </nav>
+                <?php elseif(isset($_SESSION['role_admin']) && $_SESSION['role_admin'] == 'pengajar'): ?>
+                  <a class="btn-getstarted" href="pengajar">Dashboard</a>
+                  <a class="btn-getstarted" href="logout.php">Logout</a>
+                </nav>
+                <?php else: ?>
+                    <a class="btn-getstarted" href="siswa">Dashboard</a>
+                    <a class="btn-getstarted" href="logout.php">Logout</a>
+                <?php endif; ?>
+                <?php else: ?>
+                  <a class="btn-getstarted" href="login.php">Login</a>
+                <?php endif; ?>
 
     </div>
   </header>

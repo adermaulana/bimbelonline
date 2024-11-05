@@ -9,7 +9,7 @@
     session_destroy();
 
     echo "<script>
-    alert('Login terlebih dahulu untuk pesan!');
+    alert('Login terlebih dahulu untuk membeli kelas!');
     document.location='login.php';
          </script>";
 

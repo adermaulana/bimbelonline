@@ -182,7 +182,6 @@ if ($_SESSION['role_admin'] != 'siswa') {
           <div class="card">
             <div class="card-body">
               <h5 class="card-title fw-semibold mb-4">Jadwal</h5>
-              <a class="btn btn-success mb-2" href="tambahjadwal.php">Tambah Data</a>
               <div class="card">
               <div class="table-responsive" data-simplebar>
               <table class="table table-borderless align-middle">

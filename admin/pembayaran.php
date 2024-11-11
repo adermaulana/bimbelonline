@@ -183,6 +183,7 @@ if($_SESSION['status'] != 'login'){
                         <th scope="col">No</th>
                         <th scope="col">Nama Siswa</th>
                         <th scope="col">Nama Kelas</th>
+                        <th scope="col">Durasi</th>
                         <th scope="col">Tanggal Daftar</th>
                         <th scope="col">Status Bayar</th>
                         <th scope="col">Status Aktif</th>
@@ -218,7 +219,29 @@ if($_SESSION['status'] != 'login'){
                             <p class="fs-3 fw-normal mb-0">
                                 <?= $data['nama_kelas_221047'] ?>
                                 <br>
-                                <small class="text-muted">Rp <?= number_format($data['harga_221047'], 0, ',', '.') ?></small>
+                                <?php
+                                // Harga per bulan
+                                $hargaPerBulan = $data['harga_221047'];
+
+                                // Menghitung harga berdasarkan durasi yang dipilih
+                                if ($data['durasi_221047'] == 12) {
+                                    // Durasi 12 bulan: harga * 12 dan diskon 10%
+                                    $hargaTotal = $hargaPerBulan * 12 * 0.9;
+                                } elseif ($data['durasi_221047'] == 6) {
+                                    // Durasi 6 bulan: harga * 6 dan diskon 5%
+                                    $hargaTotal = $hargaPerBulan * 6 * 0.95;
+                                } else {
+                                    $hargaTotal = $hargaPerBulan;
+                                }
+
+                                // Menampilkan harga dengan format rupiah
+                                ?>
+                                <small class="text-muted">Rp <?= number_format($hargaTotal, 0, ',', '.') ?></small>
+                            </p>
+                        </td>
+                        <td>
+                            <p class="fs-3 fw-normal mb-0">
+                                <?= $data['durasi_221047'] ?> Bulan
                             </p>
                         </td>
                         <td>

@@ -192,6 +192,7 @@ if ($_SESSION['role_admin'] != 'siswa') {
                         <th scope="col">No</th>
                         <th scope="col">Nama Kelas</th>
                         <th scope="col">Harga</th>
+                        <th scope="col">Durasi</th>
                         <th scope="col">Status</th>
                       </tr>
                     </thead>
@@ -216,7 +217,29 @@ if ($_SESSION['role_admin'] != 'siswa') {
                         </td>
                         <td>
                           <p class="fs-3 fw-normal mb-0">
-                            Rp <?= number_format($data['harga_221047'], 0, ',', '.') ?>
+                                <?php
+                                // Harga per bulan
+                                $hargaPerBulan = $data['harga_221047'];
+
+                                // Menghitung harga berdasarkan durasi yang dipilih
+                                if ($data['durasi_221047'] == 12) {
+                                    // Durasi 12 bulan: harga * 12 dan diskon 10%
+                                    $hargaTotal = $hargaPerBulan * 12 * 0.9;
+                                } elseif ($data['durasi_221047'] == 6) {
+                                    // Durasi 6 bulan: harga * 6 dan diskon 5%
+                                    $hargaTotal = $hargaPerBulan * 6 * 0.95;
+                                } else {
+                                    $hargaTotal = $hargaPerBulan;
+                                }
+
+                                // Menampilkan harga dengan format rupiah
+                                ?>
+                                Rp <?= number_format($hargaTotal, 0, ',', '.') ?>
+                            </p>
+                        </td>
+                        <td>
+                          <p class="fs-3 fw-normal mb-0">
+                          <?= $data['durasi_221047'] ?> Bulan
                           </p>
                         </td>
                         <td>

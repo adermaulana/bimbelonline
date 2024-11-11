@@ -10,6 +10,7 @@ if (!isset($_SESSION['id_admin'])) {
 
 // Ambil data dari form pembelian
 $id_kelas = $_POST['id_kelas'];
+$durasi = $_POST['durasi'];
 $harga = $_POST['harga']; // Jika harga perlu disimpan, bisa ditambahkan di tabel atau digunakan di proses pembayaran
 $id_siswa = $_SESSION['id_admin'];  // ID siswa yang sedang login
 
@@ -30,8 +31,8 @@ if (mysqli_num_rows($check_result) > 0) {
 $id_transaksi = uniqid('TRX');
 
 // Insert data transaksi ke tabel pendaftaran_221047
-$query = "INSERT INTO pendaftaran_221047 (id_221047, id_siswa_221047, id_kelas_221047, tanggal_daftar_221047, status_bayar_221047, status_221047) 
-          VALUES ('$id_transaksi', '$id_siswa', '$id_kelas', NOW(), 'pending', 'aktif')";
+$query = "INSERT INTO pendaftaran_221047 (id_221047, id_siswa_221047, id_kelas_221047, tanggal_daftar_221047, status_bayar_221047, status_221047, durasi_221047) 
+          VALUES ('$id_transaksi', '$id_siswa', '$id_kelas', NOW(), 'pending', 'aktif','$durasi')";
 
 $result = mysqli_query($koneksi, $query);
 

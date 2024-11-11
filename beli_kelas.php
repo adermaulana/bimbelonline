@@ -138,7 +138,7 @@ if (!$data) {
 
                     <div class="course-info d-flex justify-content-between align-items-center">
                         <h5>Harga</h5>
-                        <p>Rp <?= number_format($data['harga_221047'], 0, ',', '.'); ?></p>
+                        <p id="harga">Rp <?= number_format($data['harga_221047'], 0, ',', '.'); ?></p>
                     </div>
 
                     <div class="course-info d-flex justify-content-between align-items-center">
@@ -152,7 +152,13 @@ if (!$data) {
                         <form action="proses_beli.php" method="POST">
                             <input type="hidden" name="id_siswa" value="<?= $id_siswa ?>">
                             <input type="hidden" name="id_kelas" value="<?= $data['id_221047'] ?>">
-                            <input type="hidden" name="harga" value="<?= $data['harga_221047'] ?>">
+                            <input type="hidden" name="harga" id="harga_hidden" value="<?= $data['harga_221047'] ?>">
+                            <select name="durasi" id="durasi" class="form-select mb-3" required>
+                              <option value="" disabled selected>Pilih Durasi</option>
+                              <option value="1">1 Bulan</option>
+                              <option value="6">6 Bulan</option>
+                              <option value="12">12 Bulan</option>
+                            </select>
                             <button type="submit" class="btn btn-primary btn-lg">Konfirmasi Pembelian</button>
                         </form>
                     </div>
@@ -249,6 +255,36 @@ if (!$data) {
 
   <!-- Main JS File -->
   <script src="assets/home/js/main.js"></script>
+
+  <script>
+    // Harga per bulan (tanpa diskon)
+    const hargaPerBulan = <?= $data['harga_221047'] ?>;
+
+    // Elemen harga dan select durasi
+    const hargaElement = document.getElementById("harga");
+    const hargaHidden = document.getElementById("harga_hidden");
+    const durasiSelect = document.getElementById("durasi");
+
+    // Fungsi untuk update harga
+    durasiSelect.addEventListener("change", function() {
+        let hargaTerbaru = hargaPerBulan;
+
+        // Tentukan harga berdasarkan durasi
+        if (durasiSelect.value === "12") {
+            // Jika 12 bulan, total harga dengan diskon 10%
+            hargaTerbaru = hargaPerBulan * 12 * 0.9;
+        } else if (durasiSelect.value === "6") {
+            hargaTerbaru = hargaPerBulan * 6 * 0.95;
+        } else if (durasiSelect.value === "1") {
+            // Jika 1 bulan, harga tetap per bulan
+            hargaTerbaru = hargaPerBulan;
+        }
+
+        // Format harga dengan rupiah
+        hargaElement.innerText = "Rp " + new Intl.NumberFormat("id-ID").format(hargaTerbaru);
+        hargaHidden.value = hargaTerbaru; // Update hidden input harga
+    });
+</script>
 
 </body>
 

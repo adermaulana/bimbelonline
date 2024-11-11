@@ -192,7 +192,7 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                       <tr>
                         <th scope="col">No</th>
                         <th scope="col">Nama Kelas</th>
-                        <th scope="col">Harga</th>
+                        <th scope="col">Harga / Bulan</th>
                         <th scope="col">Status</th>
                         <th scope="col">Aksi</th>
                       </tr>

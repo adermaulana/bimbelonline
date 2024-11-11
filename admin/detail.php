@@ -198,7 +198,26 @@ if(isset($_GET['id'])) {
                             <h6>Informasi Kelas</h6>
                             <p>Nama Kelas: <?= $data['nama_kelas_221047'] ?></p>
                             <p>Pengajar: <?= $data['nama_pengajar'] ?></p>
-                            <p>Harga: Rp <?= number_format($data['harga_221047'], 0, ',', '.') ?></p>
+                            <p>
+                            <?php
+                                // Harga per bulan
+                                $hargaPerBulan = $data['harga_221047'];
+
+                                // Menghitung harga berdasarkan durasi yang dipilih
+                                if ($data['durasi_221047'] == 12) {
+                                    // Durasi 12 bulan: harga * 12 dan diskon 10%
+                                    $hargaTotal = $hargaPerBulan * 12 * 0.9;
+                                } elseif ($data['durasi_221047'] == 6) {
+                                    // Durasi 6 bulan: harga * 6 dan diskon 5%
+                                    $hargaTotal = $hargaPerBulan * 6 * 0.95;
+                                } else {
+                                    $hargaTotal = $hargaPerBulan;
+                                }
+
+                                // Menampilkan harga dengan format rupiah
+                                ?>
+                                Harga: Rp <?= number_format($hargaTotal, 0, ',', '.') ?>
+                            </p>
                         </div>
                     </div>
                     <div class="row">

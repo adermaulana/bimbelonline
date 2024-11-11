@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 05, 2024 at 10:45 AM
+-- Generation Time: Nov 11, 2024 at 09:58 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,9 @@ CREATE TABLE `jadwal_221047` (
 --
 
 INSERT INTO `jadwal_221047` (`id_221047`, `id_kelas_221047`, `hari_221047`, `jam_mulai_221047`, `jam_selesai_221047`, `link_meet_221047`, `created_at_221047`) VALUES
-(3, 2, 'Senin', '20:09:00', '21:09:00', 'https://github.com/adermaulanaudin', '2024-11-05 09:38:44');
+(3, 2, 'Senin', '20:09:00', '21:09:00', 'https://github.com/adermaulanaudin', '2024-11-05 09:38:44'),
+(4, 2, 'Senin', '10:00:00', '00:00:00', 'https://github.com/adermaulana', '2024-11-06 02:00:16'),
+(5, 4, 'Selasa', '10:00:00', '11:00:00', 'https://github.com/adermaulana', '2024-11-06 02:00:52');
 
 -- --------------------------------------------------------
 
@@ -103,6 +105,7 @@ CREATE TABLE `pendaftaran_221047` (
   `id_kelas_221047` int(11) NOT NULL,
   `tanggal_daftar_221047` timestamp NOT NULL DEFAULT current_timestamp(),
   `status_bayar_221047` enum('pending','lunas') DEFAULT 'pending',
+  `durasi_221047` varchar(255) DEFAULT NULL,
   `status_221047` enum('aktif','nonaktif') NOT NULL DEFAULT 'nonaktif'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -110,10 +113,8 @@ CREATE TABLE `pendaftaran_221047` (
 -- Dumping data for table `pendaftaran_221047`
 --
 
-INSERT INTO `pendaftaran_221047` (`id_221047`, `id_siswa_221047`, `id_kelas_221047`, `tanggal_daftar_221047`, `status_bayar_221047`, `status_221047`) VALUES
-(1, 4, 2, '2024-11-01 18:41:56', 'lunas', 'aktif'),
-(2, 4, 3, '2024-11-01 19:56:44', 'lunas', 'aktif'),
-(5, 4, 4, '2024-11-05 09:09:33', 'lunas', 'aktif');
+INSERT INTO `pendaftaran_221047` (`id_221047`, `id_siswa_221047`, `id_kelas_221047`, `tanggal_daftar_221047`, `status_bayar_221047`, `durasi_221047`, `status_221047`) VALUES
+(10, 4, 3, '2024-11-11 20:34:26', 'lunas', '12', 'aktif');
 
 -- --------------------------------------------------------
 
@@ -213,7 +214,7 @@ ALTER TABLE `users_221047`
 -- AUTO_INCREMENT for table `jadwal_221047`
 --
 ALTER TABLE `jadwal_221047`
-  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `kelas_221047`
@@ -231,7 +232,7 @@ ALTER TABLE `materi_221047`
 -- AUTO_INCREMENT for table `pendaftaran_221047`
 --
 ALTER TABLE `pendaftaran_221047`
-  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `sistem_221047`

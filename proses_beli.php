@@ -27,8 +27,7 @@ $check_kuota_query = "SELECT
      AND p.status_bayar_221047 IN ('lunas', 'pending')) as jumlah_terdaftar
 FROM periode_kelas_221047 pk
 WHERE pk.id_kelas_221047 = '$id_kelas'
-AND pk.durasi_bulan_221047 = '$durasi'
-AND CURRENT_DATE() BETWEEN pk.tanggal_mulai_221047 AND pk.tanggal_selesai_221047";
+AND pk.durasi_bulan_221047 = '$durasi'";
 
 $kuota_result = mysqli_query($koneksi, $check_kuota_query);
 $kuota_data = mysqli_fetch_assoc($kuota_result);

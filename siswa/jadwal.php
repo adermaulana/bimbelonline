@@ -217,6 +217,11 @@ if ($_SESSION['role_admin'] != 'siswa') {
                         </td>
                     </tr>
                     <?php endwhile; ?>
+                    <?php if(mysqli_num_rows($query) == 0): ?>
+                                <tr>
+                                    <td colspan="6" class="text-center">Belum ada Jadwal</td>
+                                </tr>
+                                <?php endif; ?>
                 </tbody>
             </table>
                 </div>

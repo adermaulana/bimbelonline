@@ -13,15 +13,55 @@ if($_SESSION['status'] != 'login'){
 
 }
 
-if(isset($_GET['hal']) == "hapus"){
+$id_kelas = $_GET['id_kelas'] ?? '';
 
-  $hapus = mysqli_query($koneksi, "DELETE FROM kelas_221047 WHERE id_221047 = '$_GET[id]'");
+$query_kelas = mysqli_query($koneksi, "SELECT k.*, u.nama_lengkap_221047 as nama_pengajar 
+                                      FROM kelas_221047 k 
+                                      JOIN users_221047 u ON k.id_pengajar_221047 = u.id_221047 
+                                      WHERE k.id_221047 = '$id_kelas'");
+$data_kelas = mysqli_fetch_array($query_kelas);
 
-  if($hapus){
+
+if (isset($_POST['simpan_periode'])) {
+  $id_kelas = $_POST['id_kelas_221047'];
+  $tanggal_mulai = $_POST['tanggal_mulai_221047'];
+  $tanggal_selesai = $_POST['tanggal_selesai_221047'];
+  $durasi_bulan = $_POST['durasi_bulan_221047'];
+  
+  // Check if there's already an entry for the same class in the same month
+  $month_start = date('Y-m', strtotime($tanggal_mulai));
+  $check_query = mysqli_query($koneksi, 
+      "SELECT * FROM periode_kelas_221047 
+      WHERE id_kelas_221047 = '$id_kelas' 
+      AND DATE_FORMAT(tanggal_mulai_221047, '%Y-%m') = '$month_start'
+      AND durasi_bulan_221047 = '$durasi_bulan'"
+  );
+  
+  if (mysqli_num_rows($check_query) > 0) {
       echo "<script>
-      alert('Hapus data sukses!');
-      document.location='kelas.php';
-      </script>";
+              alert('Periode dengan durasi yang sama di bulan yang sama sudah ada!');
+              history.back();
+            </script>";
+  } else {
+      // If no duplicate found, proceed with saving
+      $simpan = mysqli_query($koneksi, 
+          "INSERT INTO periode_kelas_221047 
+          (id_kelas_221047, tanggal_mulai_221047, tanggal_selesai_221047, durasi_bulan_221047)
+          VALUES 
+          ('$id_kelas', '$tanggal_mulai', '$tanggal_selesai', '$durasi_bulan')"
+      );
+      
+      if ($simpan) {
+          echo "<script>
+                  alert('Data periode berhasil disimpan!');
+                    window.location.href = 'periode.php?id_kelas=" . $id_kelas . "';
+                </script>";
+      } else {
+          echo "<script>
+                  alert('Gagal menyimpan data periode!');
+                  history.back();
+                </script>";
+      }
   }
 }
 
@@ -183,81 +223,45 @@ if(isset($_GET['hal']) == "hapus"){
       <!--  Header End -->
       <div class="container-fluid">
         <div class="container-fluid">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Kelas</h5>
-              <a class="btn btn-success mb-2" href="tambahkelas.php">Tambah Data</a>
-              <div class="card">
-              <div class="table-responsive" data-simplebar>
-                  <table
-                    class="table table-borderless align-middle text-nowrap"
-                  >
-                    <thead>
-                      <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Nama Kelas</th>
-                        <th scope="col">Nama Pengajar</th>
-                        <th scope="col">Harga / Bulan</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                            $no = 1;
-                            $tampil = mysqli_query($koneksi, "SELECT 
-                                                                  kelas_221047.*,
-                                                                  users_221047.nama_lengkap_221047 AS nama_pengajar
-                                                              FROM 
-                                                                  kelas_221047
-                                                              JOIN 
-                                                                  users_221047 ON kelas_221047.id_pengajar_221047 = users_221047.id_221047;
-                                                              ");
-                            while($data = mysqli_fetch_array($tampil)):
-                        ?>
-                      <tr>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0"><?= $no++ ?></p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['nama_kelas_221047'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?= $data['nama_pengajar'] ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                            Rp <?= number_format($data['harga_221047'], 0, ',', '.') ?>
-                          </p>
-                        </td>
-                        <td>
-                          <p class="fs-3 fw-normal mb-0">
-                          <?php if ($data['status_221047'] == 'aktif'): ?>
-                            <span class="badge bg-success">Aktif</span>
-                          <?php else: ?>
-                            <span class="badge bg-danger">Nonaktif</span>
-                          <?php endif; ?>
-                          </p>
-                        </td>
-                        <td>
-                            <a class="btn btn-sm btn-warning" href="editkelas.php?hal=edit&id=<?= $data['id_221047']?>">Edit</a>
-                            <a class="btn btn-sm btn-danger" href="kelas.php?hal=hapus&id=<?= $data['id_221047']?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">Hapus</a>
-                            <a class="btn btn-sm btn-info" href="periode.php?id_kelas=<?= $data['id_221047']?>">Detail Periode</a>
-                        </td>
-                      </tr>
-                      <?php
-                            endwhile; 
-                        ?>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Tambah Periode untuk Kelas: <?= $data_kelas['nama_kelas_221047'] ?></h5>
+                <p>Pengajar: <?= $data_kelas['nama_pengajar'] ?></p>
+                <p>Harga per Bulan: Rp <?= number_format($data_kelas['harga_221047'], 0, ',', '.') ?></p>
             </div>
-          </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="id_kelas_221047" value="<?= $id_kelas ?>">
+                    
+                    <div class="mb-3">
+                        <label for="durasi_bulan_221047" class="form-label">Durasi</label>
+                        <select class="form-select" id="durasi_bulan_221047" name="durasi_bulan_221047" required onchange="updateTanggalSelesai()">
+                            <option value="" disabled selected>Pilih Durasi</option>
+                            <option value="1">1 Bulan</option>
+                            <option value="6">6 Bulan (Diskon 5%)</option>
+                            <option value="12">12 Bulan (Diskon 10%)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tanggal_mulai_221047" class="form-label">Tanggal Mulai</label>
+                        <input type="date" class="form-control" id="tanggal_mulai_221047" name="tanggal_mulai_221047" required onchange="updateTanggalSelesai()">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tanggal_selesai_221047" class="form-label">Tanggal Selesai</label>
+                        <input type="date" class="form-control" id="tanggal_selesai_221047" name="tanggal_selesai_221047" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Total Harga</label>
+                        <div id="total_harga" class="form-control-plaintext">-</div>
+                    </div>
+
+                    <button type="submit" name="simpan_periode" class="btn btn-primary">Tambah Periode</button>
+                </form>
+            </div>
+        </div>
         </div>
       </div>
     </div>
@@ -269,6 +273,36 @@ if(isset($_GET['hal']) == "hapus"){
   <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
   <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
   <script src="../assets/js/dashboard.js"></script>
+
+  <script>
+  function updateTanggalSelesai() {
+      const tanggalMulai = document.getElementById('tanggal_mulai_221047').value;
+      const durasi = document.getElementById('durasi_bulan_221047').value;
+      const hargaPerBulan = <?= $data_kelas['harga_221047'] ?>;
+      
+      if (tanggalMulai && durasi) {
+          // Hitung tanggal selesai
+          const startDate = new Date(tanggalMulai);
+          const endDate = new Date(startDate);
+          endDate.setMonth(endDate.getMonth() + parseInt(durasi));
+          
+          // Format tanggal selesai untuk input date
+          const formattedDate = endDate.toISOString().split('T')[0];
+          document.getElementById('tanggal_selesai_221047').value = formattedDate;
+          
+          // Hitung total harga dengan diskon
+          let diskon = 0;
+          if (durasi == 6) diskon = 0.05;
+          if (durasi == 12) diskon = 0.10;
+          
+          const totalHarga = hargaPerBulan * durasi * (1 - diskon);
+          document.getElementById('total_harga').innerHTML = 
+              `Rp ${new Intl.NumberFormat('id-ID').format(totalHarga)}` +
+              (diskon > 0 ? ` (Termasuk diskon ${diskon * 100}%)` : '');
+      }
+  }
+  </script>
+
 </body>
 
 </html>

@@ -15,7 +15,7 @@ $harga = $_POST['harga']; // Jika harga perlu disimpan, bisa ditambahkan di tabe
 $id_siswa = $_SESSION['id_admin'];  // ID siswa yang sedang login
 
 // Periksa apakah siswa sudah membeli kelas tersebut
-$check_query = "SELECT * FROM pendaftaran_221047 WHERE id_siswa_221047 = '$id_siswa' AND id_kelas_221047 = '$id_kelas'";
+$check_query = "SELECT * FROM pendaftaran_221047 WHERE id_siswa_221047 = '$id_siswa' AND id_kelas_221047 = '$id_kelas' AND durasi_221047 = '$durasi'";
 $check_result = mysqli_query($koneksi, $check_query);
 
 if (mysqli_num_rows($check_result) > 0) {

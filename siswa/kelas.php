@@ -254,6 +254,7 @@ if ($_SESSION['role_admin'] != 'siswa') {
                         <td>
                             <a class="btn btn-sm btn-success" href="siswa.php?id_kelas=<?= $data['id_221047']?>">Lihat Siswa</a>
                             <a class="btn btn-sm btn-info"href="materi.php?id_kelas=<?= $data['id_221047']?>">Lihat Materi</a>
+
                         </td>
                       </tr>
                       <?php

@@ -47,6 +47,26 @@ if (!$data) {
     exit;
 }
 
+
+function formatTanggal($date) {
+  $bulan = array (
+      1 =>   'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember'
+  );
+  $split = explode('-', date('Y-m-d', strtotime($date)));
+  return $split[2] . ' ' . $bulan[ (int)$split[1] ] . ' ' . $split[0];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -183,12 +203,23 @@ if (!$data) {
                             <input type="hidden" name="id_siswa" value="<?= $id_siswa ?>">
                             <input type="hidden" name="id_kelas" value="<?= $data['id_221047'] ?>">
                             <input type="hidden" name="harga" id="harga_hidden" value="<?= $data['harga_221047'] ?>">
+                            
                             <select name="durasi" id="durasi" class="form-select mb-3" required>
-                              <option value="" disabled selected>Pilih Durasi</option>
-                              <option value="1">1 Bulan</option>
-                              <option value="6">6 Bulan</option>
-                              <option value="12">12 Bulan</option>
+                                <option value="" disabled selected>Pilih Periode</option>
+                                <?php
+                                      $tampil = mysqli_query($koneksi, "SELECT * FROM periode_kelas_221047 WHERE id_kelas_221047 = '".$data['id_221047']."' ");
+                                      while($result = mysqli_fetch_array($tampil)):
+                                ?>
+                                    <option value="<?= $result['durasi_bulan_221047'] ?>">
+                                        <?= $result['durasi_bulan_221047'] ?> Bulan 
+                                        (<?= formatTanggal($result['tanggal_mulai_221047']) ?> - 
+                                        <?= formatTanggal($result['tanggal_selesai_221047']) ?>)
+                                    </option>
+                                    <?php
+                                        endwhile; 
+                                    ?>
                             </select>
+                            
                             <button type="submit" class="btn btn-primary btn-lg">Konfirmasi Pembelian</button>
                         </form>
                     </div>

@@ -238,6 +238,7 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                         <td>
                             <a class="btn btn-sm btn-success" href="siswa.php?id_kelas=<?= $data['id_221047']?>">Lihat Siswa</a>
                             <a class="btn btn-sm btn-info"href="materi.php?id_kelas=<?= $data['id_221047']?>">Lihat Materi</a>
+                            <a class="btn btn-sm btn-secondary" href="periode.php?id_kelas=<?= $data['id_221047']?>">Detail Periode</a>
                             <a class="btn btn-sm btn-warning" href="editkelas.php?hal=edit&id=<?= $data['id_221047']?>">Edit</a>
                             <a class="btn btn-sm btn-danger" href="kelas.php?hal=hapus&id=<?= $data['id_221047']?>" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">Hapus</a>
                         </td>

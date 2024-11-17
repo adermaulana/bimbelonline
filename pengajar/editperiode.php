@@ -36,7 +36,7 @@ if ($_SESSION['role_admin'] != 'pengajar') {
       $tanggal_mulai = $_POST['tanggal_mulai_221047'];
       $tanggal_selesai = $_POST['tanggal_selesai_221047'];
       $durasi_bulan = $_POST['durasi_bulan_221047'];
-      
+      $kuota = $_POST['kuota_221047'];
       // Check if there's already an entry for the same class in the same month (excluding current record)
       $month_start = date('Y-m', strtotime($tanggal_mulai));
       $check_query = mysqli_query($koneksi, 
@@ -57,7 +57,8 @@ if ($_SESSION['role_admin'] != 'pengajar') {
               "UPDATE periode_kelas_221047 
               SET tanggal_mulai_221047 = '$tanggal_mulai',
                   tanggal_selesai_221047 = '$tanggal_selesai',
-                  durasi_bulan_221047 = '$durasi_bulan'
+                  durasi_bulan_221047 = '$durasi_bulan',
+                  kuota_221047 = '$kuota'
               WHERE id_periode_221047 = '$id_periode'"
           );
           
@@ -239,6 +240,11 @@ if ($_SESSION['role_admin'] != 'pengajar') {
                                     <option value="6" <?= $data_periode['durasi_bulan_221047'] == 6 ? 'selected' : '' ?>>6 Bulan (Diskon 5%)</option>
                                     <option value="12" <?= $data_periode['durasi_bulan_221047'] == 12 ? 'selected' : '' ?>>12 Bulan (Diskon 10%)</option>
                                 </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="kuota_221047" class="form-label">Kuota</label>
+                                <input type="number" value="<?=  $data_periode['kuota_221047'] ?>" class="form-control" id="kuota_221047" name="kuota_221047"required>
                             </div>
 
                             <div class="mb-3">

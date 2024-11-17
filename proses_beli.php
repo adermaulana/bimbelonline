@@ -11,15 +11,61 @@ if (!isset($_SESSION['id_admin'])) {
 // Ambil data dari form pembelian
 $id_kelas = $_POST['id_kelas'];
 $durasi = $_POST['durasi'];
-$harga = $_POST['harga']; // Jika harga perlu disimpan, bisa ditambahkan di tabel atau digunakan di proses pembayaran
-$id_siswa = $_SESSION['id_admin'];  // ID siswa yang sedang login
+$harga = $_POST['harga'];
+$id_siswa = $_SESSION['id_admin'];
+
+// Cek kuota kelas di periode yang sesuai
+$check_kuota_query = "SELECT 
+    pk.kuota_221047,
+    pk.tanggal_mulai_221047,
+    pk.tanggal_selesai_221047,
+    (SELECT COUNT(*) 
+     FROM pendaftaran_221047 p 
+     WHERE p.id_kelas_221047 = pk.id_kelas_221047 
+     AND p.durasi_221047 = pk.durasi_bulan_221047
+     AND p.status_221047 = 'aktif'
+     AND p.status_bayar_221047 IN ('lunas', 'pending')) as jumlah_terdaftar
+FROM periode_kelas_221047 pk
+WHERE pk.id_kelas_221047 = '$id_kelas'
+AND pk.durasi_bulan_221047 = '$durasi'
+AND CURRENT_DATE() BETWEEN pk.tanggal_mulai_221047 AND pk.tanggal_selesai_221047";
+
+$kuota_result = mysqli_query($koneksi, $check_kuota_query);
+$kuota_data = mysqli_fetch_assoc($kuota_result);
+
+// Debug - tampilkan nilai kuota dan jumlah terdaftar
+error_log("Kuota: " . print_r($kuota_data, true));
+
+if (!$kuota_data) {
+    echo "<script>
+            alert('Periode kelas tidak ditemukan atau sudah tidak tersedia.');
+            window.location.href = 'kelas.php';
+          </script>";
+    exit;
+}
+
+$kuota = $kuota_data['kuota_221047'];
+$jumlah_terdaftar = $kuota_data['jumlah_terdaftar'];
+
+if ($jumlah_terdaftar >= $kuota) {
+    echo "<script>
+            alert('Maaf, kuota kelas untuk paket ini sudah penuh. (Kuota: $kuota, Terdaftar: $jumlah_terdaftar)');
+            window.location.href = 'kelas.php';
+          </script>";
+    exit;
+}
 
 // Periksa apakah siswa sudah membeli kelas tersebut
-$check_query = "SELECT * FROM pendaftaran_221047 WHERE id_siswa_221047 = '$id_siswa' AND id_kelas_221047 = '$id_kelas' AND durasi_221047 = '$durasi'";
+$check_query = "SELECT * FROM pendaftaran_221047 
+                WHERE id_siswa_221047 = '$id_siswa' 
+                AND id_kelas_221047 = '$id_kelas' 
+                AND durasi_221047 = '$durasi'
+                AND status_221047 = 'aktif'
+                AND status_bayar_221047 IN ('lunas', 'pending')";
+
 $check_result = mysqli_query($koneksi, $check_query);
 
 if (mysqli_num_rows($check_result) > 0) {
-    // Jika sudah pernah membeli kelas, tampilkan alert
     echo "<script>
             alert('Anda sudah membeli kelas ini.');
             window.location.href = 'kelas.php';
@@ -27,12 +73,13 @@ if (mysqli_num_rows($check_result) > 0) {
     exit;
 }
 
-// Buat ID transaksi unik atau gunakan sistem auto increment di database
+// Buat ID transaksi unik
 $id_transaksi = uniqid('TRX');
 
 // Insert data transaksi ke tabel pendaftaran_221047
-$query = "INSERT INTO pendaftaran_221047 (id_221047, id_siswa_221047, id_kelas_221047, tanggal_daftar_221047, status_bayar_221047, status_221047, durasi_221047) 
-          VALUES ('$id_transaksi', '$id_siswa', '$id_kelas', NOW(), 'pending', 'aktif','$durasi')";
+$query = "INSERT INTO pendaftaran_221047 (id_221047, id_siswa_221047, id_kelas_221047, 
+          tanggal_daftar_221047, status_bayar_221047, status_221047, durasi_221047) 
+          VALUES ('$id_transaksi', '$id_siswa', '$id_kelas', NOW(), 'pending', 'aktif', '$durasi')";
 
 $result = mysqli_query($koneksi, $query);
 

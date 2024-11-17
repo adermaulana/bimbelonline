@@ -224,6 +224,7 @@ function formatTanggal($date) {
                             <th>Tanggal Mulai</th>
                             <th>Tanggal Selesai</th>
                             <th>Durasi</th>
+                            <th>Kuota</th>
                             <th>Total Harga</th>
                             <th>Aksi</th>
                         </tr>
@@ -248,6 +249,7 @@ function formatTanggal($date) {
                             <td><?= formatTanggal($periode['tanggal_mulai_221047']) ?></td>
                             <td><?= formatTanggal($periode['tanggal_selesai_221047']) ?></td>
                             <td><?= $periode['durasi_bulan_221047'] ?> bulan</td>
+                            <td><?= $periode['kuota_221047'] ?> orang</td>
                             <td>
                                 Rp <?= number_format($total_harga, 0, ',', '.') ?>
                                 <?php if($diskon > 0): ?>

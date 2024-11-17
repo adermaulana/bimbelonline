@@ -27,6 +27,7 @@ if (isset($_POST['simpan_periode'])) {
   $tanggal_mulai = $_POST['tanggal_mulai_221047'];
   $tanggal_selesai = $_POST['tanggal_selesai_221047'];
   $durasi_bulan = $_POST['durasi_bulan_221047'];
+  $kuota = $_POST['kuota_221047'];
   
   // Check if there's already an entry for the same class in the same month
   $month_start = date('Y-m', strtotime($tanggal_mulai));
@@ -46,9 +47,9 @@ if (isset($_POST['simpan_periode'])) {
       // If no duplicate found, proceed with saving
       $simpan = mysqli_query($koneksi, 
           "INSERT INTO periode_kelas_221047 
-          (id_kelas_221047, tanggal_mulai_221047, tanggal_selesai_221047, durasi_bulan_221047)
+          (id_kelas_221047, tanggal_mulai_221047, tanggal_selesai_221047, durasi_bulan_221047,kuota_221047)
           VALUES 
-          ('$id_kelas', '$tanggal_mulai', '$tanggal_selesai', '$durasi_bulan')"
+          ('$id_kelas', '$tanggal_mulai', '$tanggal_selesai', '$durasi_bulan','$kuota')"
       );
       
       if ($simpan) {
@@ -242,6 +243,11 @@ if (isset($_POST['simpan_periode'])) {
                             <option value="12">12 Bulan (Diskon 10%)</option>
                         </select>
                     </div>
+
+                    <div class="mb-3">
+                                <label for="kuota_221047" class="form-label">Kuota</label>
+                                <input type="number" class="form-control" id="kuota_221047" name="kuota_221047"required>
+                            </div>
 
                     <div class="mb-3">
                         <label for="tanggal_mulai_221047" class="form-label">Tanggal Mulai</label>

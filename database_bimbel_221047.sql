@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 11, 2024 at 09:58 PM
+-- Generation Time: Nov 19, 2024 at 06:53 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -37,15 +37,6 @@ CREATE TABLE `jadwal_221047` (
   `created_at_221047` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `jadwal_221047`
---
-
-INSERT INTO `jadwal_221047` (`id_221047`, `id_kelas_221047`, `hari_221047`, `jam_mulai_221047`, `jam_selesai_221047`, `link_meet_221047`, `created_at_221047`) VALUES
-(3, 2, 'Senin', '20:09:00', '21:09:00', 'https://github.com/adermaulanaudin', '2024-11-05 09:38:44'),
-(4, 2, 'Senin', '10:00:00', '00:00:00', 'https://github.com/adermaulana', '2024-11-06 02:00:16'),
-(5, 4, 'Selasa', '10:00:00', '11:00:00', 'https://github.com/adermaulana', '2024-11-06 02:00:52');
-
 -- --------------------------------------------------------
 
 --
@@ -67,9 +58,8 @@ CREATE TABLE `kelas_221047` (
 --
 
 INSERT INTO `kelas_221047` (`id_221047`, `id_pengajar_221047`, `nama_kelas_221047`, `deskripsi_221047`, `harga_221047`, `status_221047`, `created_at_221047`) VALUES
-(2, 3, 'Matematika Dasar', 'Matematika Dasar', 500000, 'aktif', '2024-11-01 18:34:46'),
-(3, 3, 'Matematika Lanjutan', 'Matematika Lanjutan', 1000000, 'aktif', '2024-11-01 19:07:21'),
-(4, 3, 'Pemrograman Dasar', 'Pemrograman Dasar adalah pengenalan dan pembelajaran konsep dasar dalam pemrograman komputer yang mencakup cara menulis, memahami, dan menjalankan kode. Materi ini biasanya meliputi pengenalan algoritma, struktur data dasar, dan sintaksis bahasa pemrograman. Di dalam Pemrograman Dasar, siswa belajar memahami logika pemrograman, penggunaan variabel, tipe data, operasi logika, perulangan, dan percabangan. Tujuan dari Pemrograman Dasar adalah agar siswa dapat membuat program sederhana dan memiliki dasar pemikiran algoritmis yang diperlukan untuk memecahkan masalah dalam konteks pemrograman. Pembelajaran ini sering menggunakan bahasa pemrograman seperti Python, Java, atau C++ untuk memperkenalkan sintaksis dasar dan konsep yang umum dalam berbagai bahasa pemrograman.', 500000, 'aktif', '2024-11-05 09:04:17');
+(5, 6, 'Matematika', 'keren', 500000, 'aktif', '2024-11-17 22:13:03'),
+(6, 7, 'Matematika Dasar', 'kerren', 2000000, 'aktif', '2024-11-17 22:21:49');
 
 -- --------------------------------------------------------
 
@@ -85,13 +75,6 @@ CREATE TABLE `materi_221047` (
   `file_materi_221047` varchar(255) DEFAULT NULL,
   `created_at_221047` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `materi_221047`
---
-
-INSERT INTO `materi_221047` (`id_221047`, `id_kelas_221047`, `judul_221047`, `deskripsi_221047`, `file_materi_221047`, `created_at_221047`) VALUES
-(2, 3, 'Algoritma', 'Algoritma', '20241101202037_67252a051e0d0.docx', '2024-11-01 19:20:37');
 
 -- --------------------------------------------------------
 
@@ -114,7 +97,31 @@ CREATE TABLE `pendaftaran_221047` (
 --
 
 INSERT INTO `pendaftaran_221047` (`id_221047`, `id_siswa_221047`, `id_kelas_221047`, `tanggal_daftar_221047`, `status_bayar_221047`, `durasi_221047`, `status_221047`) VALUES
-(10, 4, 3, '2024-11-11 20:34:26', 'lunas', '12', 'aktif');
+(19, 8, 5, '2024-11-17 22:19:20', 'lunas', '6', 'aktif'),
+(20, 8, 6, '2024-11-17 22:22:53', 'lunas', '12', 'aktif');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `periode_kelas_221047`
+--
+
+CREATE TABLE `periode_kelas_221047` (
+  `id_periode_221047` int(11) NOT NULL,
+  `id_kelas_221047` int(11) DEFAULT NULL,
+  `tanggal_mulai_221047` date DEFAULT NULL,
+  `tanggal_selesai_221047` date DEFAULT NULL,
+  `durasi_bulan_221047` int(11) DEFAULT NULL,
+  `kuota_221047` int(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `periode_kelas_221047`
+--
+
+INSERT INTO `periode_kelas_221047` (`id_periode_221047`, `id_kelas_221047`, `tanggal_mulai_221047`, `tanggal_selesai_221047`, `durasi_bulan_221047`, `kuota_221047`) VALUES
+(8, 5, '2024-12-01', '2025-06-01', 6, 15),
+(9, 6, '2025-01-01', '2026-01-01', 12, 20);
 
 -- --------------------------------------------------------
 
@@ -157,8 +164,9 @@ CREATE TABLE `users_221047` (
 
 INSERT INTO `users_221047` (`id_221047`, `password_221047`, `nama_lengkap_221047`, `email_221047`, `role_221047`, `no_hp_221047`, `created_at_221047`) VALUES
 (2, '21232f297a57a5a743894a0e4a801fc3', 'admin', 'admin@gmail.com', 'admin', '09543', '2024-11-01 18:04:59'),
-(3, '696ed7534349804cf5050ae88bc994ba', 'pengajar', 'pengajar@gmail.com', 'pengajar', '2332', '2024-11-01 18:08:29'),
-(4, 'bcd724d15cde8c47650fda962968f102', 'siswa', 'siswa@gmail.com', 'siswa', '1212', '2024-11-01 18:13:05');
+(6, '696ed7534349804cf5050ae88bc994ba', 'Dr. Ahmad Zaky, M.Sc.', 'ahmad@gmail.com', 'pengajar', '0843', '2024-11-17 22:12:19'),
+(7, '696ed7534349804cf5050ae88bc994ba', 'M. Ridwan Satria, S.S., M.A.', 'ridwan@gmail.com', 'pengajar', '08543', '2024-11-17 22:12:42'),
+(8, 'bcd724d15cde8c47650fda962968f102', 'siswa', 'siswa@gmail.com', 'siswa', '0853', '2024-11-17 22:15:23');
 
 --
 -- Indexes for dumped tables
@@ -183,15 +191,22 @@ ALTER TABLE `kelas_221047`
 --
 ALTER TABLE `materi_221047`
   ADD PRIMARY KEY (`id_221047`),
-  ADD KEY `kelas_id_221047` (`id_kelas_221047`);
+  ADD KEY `materi_221047_ibfk_1` (`id_kelas_221047`);
 
 --
 -- Indexes for table `pendaftaran_221047`
 --
 ALTER TABLE `pendaftaran_221047`
   ADD PRIMARY KEY (`id_221047`),
-  ADD KEY `kelas_id_221047` (`id_kelas_221047`),
-  ADD KEY `id_siswa_221047` (`id_siswa_221047`,`id_kelas_221047`);
+  ADD KEY `id_siswa_221047` (`id_siswa_221047`,`id_kelas_221047`),
+  ADD KEY `pendaftaran_221047_ibfk_2` (`id_kelas_221047`);
+
+--
+-- Indexes for table `periode_kelas_221047`
+--
+ALTER TABLE `periode_kelas_221047`
+  ADD PRIMARY KEY (`id_periode_221047`),
+  ADD KEY `periode_kelas_221047_ibfk_1` (`id_kelas_221047`);
 
 --
 -- Indexes for table `sistem_221047`
@@ -220,7 +235,7 @@ ALTER TABLE `jadwal_221047`
 -- AUTO_INCREMENT for table `kelas_221047`
 --
 ALTER TABLE `kelas_221047`
-  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `materi_221047`
@@ -232,7 +247,13 @@ ALTER TABLE `materi_221047`
 -- AUTO_INCREMENT for table `pendaftaran_221047`
 --
 ALTER TABLE `pendaftaran_221047`
-  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `periode_kelas_221047`
+--
+ALTER TABLE `periode_kelas_221047`
+  MODIFY `id_periode_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `sistem_221047`
@@ -244,7 +265,7 @@ ALTER TABLE `sistem_221047`
 -- AUTO_INCREMENT for table `users_221047`
 --
 ALTER TABLE `users_221047`
-  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
@@ -266,14 +287,20 @@ ALTER TABLE `kelas_221047`
 -- Constraints for table `materi_221047`
 --
 ALTER TABLE `materi_221047`
-  ADD CONSTRAINT `materi_221047_ibfk_1` FOREIGN KEY (`id_kelas_221047`) REFERENCES `kelas_221047` (`id_221047`);
+  ADD CONSTRAINT `materi_221047_ibfk_1` FOREIGN KEY (`id_kelas_221047`) REFERENCES `kelas_221047` (`id_221047`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `pendaftaran_221047`
 --
 ALTER TABLE `pendaftaran_221047`
-  ADD CONSTRAINT `pendaftaran_221047_ibfk_1` FOREIGN KEY (`id_siswa_221047`) REFERENCES `users_221047` (`id_221047`),
-  ADD CONSTRAINT `pendaftaran_221047_ibfk_2` FOREIGN KEY (`id_kelas_221047`) REFERENCES `kelas_221047` (`id_221047`);
+  ADD CONSTRAINT `pendaftaran_221047_ibfk_1` FOREIGN KEY (`id_siswa_221047`) REFERENCES `users_221047` (`id_221047`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pendaftaran_221047_ibfk_2` FOREIGN KEY (`id_kelas_221047`) REFERENCES `kelas_221047` (`id_221047`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `periode_kelas_221047`
+--
+ALTER TABLE `periode_kelas_221047`
+  ADD CONSTRAINT `periode_kelas_221047_ibfk_1` FOREIGN KEY (`id_kelas_221047`) REFERENCES `kelas_221047` (`id_221047`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

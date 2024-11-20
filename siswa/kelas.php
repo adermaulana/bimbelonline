@@ -108,6 +108,18 @@ if ($_SESSION['role_admin'] != 'siswa') {
                 <span class="hide-menu ms-2 ps-1">Data Jadwal</span>
               </a>
             </li>
+            <li class="sidebar-item">
+              <a
+                class="sidebar-link sidebar-link danger-hover-bg"
+                href="pembayaran.php"
+                aria-expanded="false"
+              >
+                <span class="aside-icon p-2 bg-light-danger rounded-3">
+                  <i class="ti ti-layout-dashboard fs-7 text-danger"></i>
+                </span>
+                <span class="hide-menu ms-2 ps-1">Data Pembayaran</span>
+              </a>
+            </li>
             <!-- <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link success-hover-bg"
@@ -202,8 +214,7 @@ if ($_SESSION['role_admin'] != 'siswa') {
                             $tampil = mysqli_query($koneksi, "SELECT pendaftaran_221047.*, kelas_221047.* 
                                                               FROM pendaftaran_221047 
                                                               INNER JOIN kelas_221047 ON pendaftaran_221047.id_kelas_221047 = kelas_221047.id_221047
-                                                              WHERE pendaftaran_221047.id_siswa_221047 = '$id_siswa' 
-                                                              AND pendaftaran_221047.status_bayar_221047 = 'lunas'");
+                                                              WHERE pendaftaran_221047.id_siswa_221047 = '$id_siswa'");
                             while($data = mysqli_fetch_array($tampil)):
                         ?>
                       <tr>

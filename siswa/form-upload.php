@@ -190,21 +190,46 @@ if ($_SESSION['role_admin'] != 'siswa') {
       </header>
       <!--  Header End -->
       <div class="container-fluid">
-        <!--  Row 1 -->
-        <div class="row">
-        <div class="col-md-3">
-              <div class="card">
-                  <div class="card-body">
-                      <h5 class="card-title">Total Kelas Dibeli</h5>
-                      <?php
-                      $query_kelas = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM pendaftaran_221047 
-                                                            WHERE id_siswa_221047 = '$id_siswa'");
-                      $total_kelas = mysqli_fetch_assoc($query_kelas)['total'];
-                      ?>
-                      <h2><?= $total_kelas ?></h2>
-                  </div>
-              </div>
-          </div>
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-4">Upload Bukti Pembayaran</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <?php if(isset($_SESSION['error'])): ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <?= $_SESSION['error'] ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <?php unset($_SESSION['error']); ?>
+                            <?php endif; ?>
+
+                            <?php if(isset($_SESSION['success'])): ?>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <?= $_SESSION['success'] ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <?php unset($_SESSION['success']); ?>
+                            <?php endif; ?>
+
+                            <form action="proses-upload.php" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="id_pendaftaran" value="<?= $_GET['id'] ?>">
+                                
+                                <div class="mb-4">
+                                    <label for="bukti" class="form-label fw-semibold">Bukti Pembayaran</label>
+                                    <input type="file" class="form-control" id="bukti" name="bukti" accept="image/*" required>
+                                    <div class="form-text text-muted">Format yang diperbolehkan: JPG, JPEG, PNG. Maksimal 2MB</div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">Upload Bukti Pembayaran</button>
+                                    <a href="index.php" class="btn btn-secondary">Kembali</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
       </div>
     </div>

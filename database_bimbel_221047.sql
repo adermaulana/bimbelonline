@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 19, 2024 at 06:53 PM
+-- Generation Time: Nov 20, 2024 at 02:10 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -89,16 +89,17 @@ CREATE TABLE `pendaftaran_221047` (
   `tanggal_daftar_221047` timestamp NOT NULL DEFAULT current_timestamp(),
   `status_bayar_221047` enum('pending','lunas') DEFAULT 'pending',
   `durasi_221047` varchar(255) DEFAULT NULL,
-  `status_221047` enum('aktif','nonaktif') NOT NULL DEFAULT 'nonaktif'
+  `status_221047` enum('aktif','nonaktif') NOT NULL DEFAULT 'nonaktif',
+  `bukti_pembayaran_221047` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `pendaftaran_221047`
 --
 
-INSERT INTO `pendaftaran_221047` (`id_221047`, `id_siswa_221047`, `id_kelas_221047`, `tanggal_daftar_221047`, `status_bayar_221047`, `durasi_221047`, `status_221047`) VALUES
-(19, 8, 5, '2024-11-17 22:19:20', 'lunas', '6', 'aktif'),
-(20, 8, 6, '2024-11-17 22:22:53', 'lunas', '12', 'aktif');
+INSERT INTO `pendaftaran_221047` (`id_221047`, `id_siswa_221047`, `id_kelas_221047`, `tanggal_daftar_221047`, `status_bayar_221047`, `durasi_221047`, `status_221047`, `bukti_pembayaran_221047`) VALUES
+(21, 8, 5, '2024-11-20 00:38:30', 'pending', '6', 'aktif', 'payment_1732064661_673d35953dfdb.jpg'),
+(22, 8, 6, '2024-11-20 00:48:09', 'pending', '12', 'aktif', 'payment_1732064630_673d35762a3d8.jpg');
 
 -- --------------------------------------------------------
 
@@ -247,7 +248,7 @@ ALTER TABLE `materi_221047`
 -- AUTO_INCREMENT for table `pendaftaran_221047`
 --
 ALTER TABLE `pendaftaran_221047`
-  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_221047` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `periode_kelas_221047`

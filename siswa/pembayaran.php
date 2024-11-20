@@ -190,20 +190,124 @@ if ($_SESSION['role_admin'] != 'siswa') {
       </header>
       <!--  Header End -->
       <div class="container-fluid">
-        <!--  Row 1 -->
-        <div class="row">
-        <div class="col-md-3">
+        <div class="container-fluid">
+          <div class="card">
+            <div class="card-body">
+            <?php if(isset($_SESSION['error'])): ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <?= $_SESSION['error'] ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <?php unset($_SESSION['error']); ?>
+                            <?php endif; ?>
+
+                            <?php if(isset($_SESSION['success'])): ?>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <?= $_SESSION['success'] ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <?php unset($_SESSION['success']); ?>
+                            <?php endif; ?>
+              <h5 class="card-title fw-semibold mb-4">Pembayaran</h5>
               <div class="card">
-                  <div class="card-body">
-                      <h5 class="card-title">Total Kelas Dibeli</h5>
-                      <?php
-                      $query_kelas = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM pendaftaran_221047 
-                                                            WHERE id_siswa_221047 = '$id_siswa'");
-                      $total_kelas = mysqli_fetch_assoc($query_kelas)['total'];
-                      ?>
-                      <h2><?= $total_kelas ?></h2>
-                  </div>
+              <div class="table-responsive" data-simplebar>
+              <table class="table table-borderless align-middle text-nowrap">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Nama Siswa</th>
+                        <th scope="col">Nama Kelas</th>
+                        <th scope="col">Durasi</th>
+                        <th scope="col">Tanggal Daftar</th>
+                        <th scope="col">Status Bayar</th>
+                        <th scope="col">Status Aktif</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        $no = 1;
+                        $tampil = mysqli_query($koneksi, "
+                            SELECT 
+                                p.*,
+                                u.nama_lengkap_221047 as nama_siswa,
+                                k.nama_kelas_221047,
+                                k.harga_221047
+                            FROM pendaftaran_221047 p
+                            JOIN users_221047 u ON p.id_siswa_221047 = u.id_221047
+                            JOIN kelas_221047 k ON p.id_kelas_221047 = k.id_221047
+                            WHERE p.id_siswa_221047 = u.id_221047
+                            ORDER BY p.tanggal_daftar_221047 DESC
+                        ");
+                        while($data = mysqli_fetch_array($tampil)):
+                    ?>
+                    <tr>
+                        <td>
+                            <p class="fs-3 fw-normal mb-0"><?= $no++ ?></p>
+                        </td>
+                        <td>
+                            <p class="fs-3 fw-normal mb-0">
+                                <?= $data['nama_siswa'] ?>
+                            </p>
+                        </td>
+                        <td>
+                            <p class="fs-3 fw-normal mb-0">
+                                <?= $data['nama_kelas_221047'] ?>
+                                <br>
+                                <?php
+                                // Harga per bulan
+                                $hargaPerBulan = $data['harga_221047'];
+
+                                // Menghitung harga berdasarkan durasi yang dipilih
+                                if ($data['durasi_221047'] == 12) {
+                                    // Durasi 12 bulan: harga * 12 dan diskon 10%
+                                    $hargaTotal = $hargaPerBulan * 12 * 0.9;
+                                } elseif ($data['durasi_221047'] == 6) {
+                                    // Durasi 6 bulan: harga * 6 dan diskon 5%
+                                    $hargaTotal = $hargaPerBulan * 6 * 0.95;
+                                } else {
+                                    $hargaTotal = $hargaPerBulan;
+                                }
+
+                                // Menampilkan harga dengan format rupiah
+                                ?>
+                                <small class="text-muted">Rp <?= number_format($hargaTotal, 0, ',', '.') ?></small>
+                            </p>
+                        </td>
+                        <td>
+                            <p class="fs-3 fw-normal mb-0">
+                                <?= $data['durasi_221047'] ?> Bulan
+                            </p>
+                        </td>
+                        <td>
+                            <p class="fs-3 fw-normal mb-0">
+                                <?= date('d/m/Y', strtotime($data['tanggal_daftar_221047'])) ?>
+                            </p>
+                        </td>
+                        <td>
+                            <span class="badge bg-<?= ($data['status_bayar_221047'] == 'lunas') ? 'success' : 'warning' ?>">
+                                <?= ucfirst($data['status_bayar_221047']) ?>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-<?= ($data['status_221047'] == 'aktif') ? 'success' : 'danger' ?>">
+                                <?= ucfirst($data['status_221047']) ?>
+                            </span>
+                        </td>
+                        <td>
+                            <?php if($data['status_bayar_221047'] == 'pending'): ?>
+                                <a  class="btn btn-sm btn-primary" href="form-upload.php?id=<?= $data['id_221047'] ?>">
+                                    Upload Bukti Pembayaran
+                                </a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+                </div>
               </div>
+            </div>
           </div>
         </div>
       </div>

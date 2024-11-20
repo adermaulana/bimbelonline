@@ -108,6 +108,18 @@ if ($_SESSION['role_admin'] != 'siswa') {
                 <span class="hide-menu ms-2 ps-1">Data Jadwal</span>
               </a>
             </li>
+            <li class="sidebar-item">
+              <a
+                class="sidebar-link sidebar-link danger-hover-bg"
+                href="pembayaran.php"
+                aria-expanded="false"
+              >
+                <span class="aside-icon p-2 bg-light-danger rounded-3">
+                  <i class="ti ti-layout-dashboard fs-7 text-danger"></i>
+                </span>
+                <span class="hide-menu ms-2 ps-1">Data Pembayaran</span>
+              </a>
+            </li>
             <!-- <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link success-hover-bg"

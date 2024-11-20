@@ -260,16 +260,39 @@ if($_SESSION['status'] != 'login'){
                             </span>
                         </td>
                         <td>
-                            <?php if($data['status_bayar_221047'] == 'pending'): ?>
-                                <a onclick="return confirm('Apakah anda yakin ingin mengkonfirmasi pembayaran ini?')" class="btn btn-sm btn-primary" href="verifikasi.php?id=<?= $data['id_221047'] ?>">
+                            <?php if($data['status_bayar_221047'] == 'pending' && !empty($data['bukti_pembayaran_221047'])): ?>
+                                <button type="button" class="btn btn-sm btn-primary view-bukti" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#buktiModal"
+                                    data-id="<?= $data['id_221047'] ?>"
+                                    data-siswa="<?= $data['nama_siswa'] ?>"
+                                    data-kelas="<?= $data['nama_kelas_221047'] ?>"
+                                    data-total="<?= number_format($hargaTotal, 0, ',', '.') ?>"
+                                    data-bukti="../siswa/uploads/bukti_pembayaran/<?= $data['bukti_pembayaran_221047'] ?>">
+                                    Lihat Bukti
+                                </button>
+                                <a onclick="return confirm('Apakah anda yakin ingin mengkonfirmasi pembayaran ini?')" 
+                                    class="btn btn-sm btn-success" 
+                                    href="verifikasi.php?id=<?= $data['id_221047'] ?>">
                                     Verifikasi
                                 </a>
+                            <?php elseif($data['status_bayar_221047'] == 'lunas' && !empty($data['bukti_pembayaran_221047'])): ?>
+                                <button type="button" class="btn btn-sm btn-info view-bukti" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#buktiModal"
+                                    data-id="<?= $data['id_221047'] ?>"
+                                    data-siswa="<?= $data['nama_siswa'] ?>"
+                                    data-kelas="<?= $data['nama_kelas_221047'] ?>"
+                                    data-total="<?= number_format($hargaTotal, 0, ',', '.') ?>"
+                                    data-bukti="../siswa/uploads/bukti_pembayaran/<?= $data['bukti_pembayaran_221047'] ?>">
+                                    Lihat Bukti
+                                </button>
                             <?php endif; ?>
                             <a class="btn btn-sm btn-info" href="detail.php?id=<?= $data['id_221047'] ?>">
                                 Detail
                             </a>
                             <a class="btn btn-sm btn-danger" href="hapus.php?id=<?= $data['id_221047'] ?>" 
-                              onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">
+                                onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">
                                 Hapus
                             </a>
                         </td>
@@ -285,6 +308,58 @@ if($_SESSION['status'] != 'login'){
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="buktiModal" tabindex="-1" aria-labelledby="buktiModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buktiModalLabel">Bukti Pembayaran</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <img id="buktiImage" src="" alt="Bukti Pembayaran" class="img-fluid">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="fw-semibold">Detail Pembayaran</h6>
+                                <table class="table">
+                                    <tr>
+                                        <td width="200">Nama Siswa</td>
+                                        <td width="20">:</td>
+                                        <td id="namaSiswa"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nama Kelas</td>
+                                        <td>:</td>
+                                        <td id="namaKelas"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Pembayaran</td>
+                                        <td>:</td>
+                                        <td id="totalPembayaran"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tanggal Upload</td>
+                                        <td>:</td>
+                                        <td id="tanggalUpload"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
   <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
   <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/js/sidebarmenu.js"></script>
@@ -292,6 +367,31 @@ if($_SESSION['status'] != 'login'){
   <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
   <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
   <script src="../assets/js/dashboard.js"></script>
+
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handler untuk tombol view-bukti
+    const viewButtons = document.querySelectorAll('.view-bukti');
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Mengambil data dari data attributes
+            const bukti = this.getAttribute('data-bukti');
+            const siswa = this.getAttribute('data-siswa');
+            const kelas = this.getAttribute('data-kelas');
+            const total = this.getAttribute('data-total');
+            const tanggal = this.getAttribute('data-tanggal');
+
+            // Mengisi data ke dalam modal
+            document.getElementById('buktiImage').src = bukti;
+            document.getElementById('namaSiswa').textContent = siswa;
+            document.getElementById('namaKelas').textContent = kelas;
+            document.getElementById('totalPembayaran').textContent = 'Rp ' + total;
+            document.getElementById('tanggalUpload').textContent = tanggal;
+        });
+    });
+});
+</script>
+
 </body>
 
 </html>

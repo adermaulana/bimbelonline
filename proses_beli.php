@@ -19,22 +19,13 @@ $check_kuota_query = "SELECT
     pk.kuota_221047,
     pk.tanggal_mulai_221047,
     pk.tanggal_selesai_221047,
-    pk.id_periode_221047 as periode_id,
-    (SELECT COUNT(*) 
-     FROM pendaftaran_221047 p 
-     WHERE p.id_kelas_221047 = pk.id_kelas_221047 
-     AND p.durasi_221047 = pk.durasi_bulan_221047
-     AND p.status_221047 = 'aktif'
-     AND p.status_bayar_221047 IN ('lunas', 'pending')) as jumlah_terdaftar
+    pk.id_periode_221047 as periode_id
 FROM periode_kelas_221047 pk
 WHERE pk.id_kelas_221047 = '$id_kelas'
 AND pk.durasi_bulan_221047 = '$durasi'";
 
 $kuota_result = mysqli_query($koneksi, $check_kuota_query);
 $kuota_data = mysqli_fetch_assoc($kuota_result);
-
-// Debug - tampilkan nilai kuota dan jumlah terdaftar
-error_log("Kuota: " . print_r($kuota_data, true));
 
 if (!$kuota_data) {
     echo "<script>
@@ -45,12 +36,11 @@ if (!$kuota_data) {
 }
 
 $kuota = $kuota_data['kuota_221047'];
-$jumlah_terdaftar = $kuota_data['jumlah_terdaftar'];
 $periode_id = $kuota_data['periode_id'];
 
-if ($jumlah_terdaftar >= $kuota) {
+if ($kuota <= 0) {
     echo "<script>
-            alert('Maaf, kuota kelas untuk paket ini sudah penuh. (Kuota: $kuota, Terdaftar: $jumlah_terdaftar)');
+            alert('Maaf, kuota kelas untuk paket ini sudah penuh.');
             window.location.href = 'kelas.php';
           </script>";
     exit;

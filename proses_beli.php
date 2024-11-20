@@ -19,6 +19,7 @@ $check_kuota_query = "SELECT
     pk.kuota_221047,
     pk.tanggal_mulai_221047,
     pk.tanggal_selesai_221047,
+    pk.id_periode_221047 as periode_id,
     (SELECT COUNT(*) 
      FROM pendaftaran_221047 p 
      WHERE p.id_kelas_221047 = pk.id_kelas_221047 
@@ -45,6 +46,7 @@ if (!$kuota_data) {
 
 $kuota = $kuota_data['kuota_221047'];
 $jumlah_terdaftar = $kuota_data['jumlah_terdaftar'];
+$periode_id = $kuota_data['periode_id'];
 
 if ($jumlah_terdaftar >= $kuota) {
     echo "<script>
@@ -72,23 +74,48 @@ if (mysqli_num_rows($check_result) > 0) {
     exit;
 }
 
-// Buat ID transaksi unik
-$id_transaksi = uniqid('TRX');
+// Mulai transaksi
+mysqli_begin_transaction($koneksi);
 
-// Insert data transaksi ke tabel pendaftaran_221047
-$query = "INSERT INTO pendaftaran_221047 (id_221047, id_siswa_221047, id_kelas_221047, 
-          tanggal_daftar_221047, status_bayar_221047, status_221047, durasi_221047) 
-          VALUES ('$id_transaksi', '$id_siswa', '$id_kelas', NOW(), 'pending', 'aktif', '$durasi')";
+try {
+    // Buat ID transaksi unik
+    $id_transaksi = uniqid('TRX');
 
-$result = mysqli_query($koneksi, $query);
+    // Insert data transaksi ke tabel pendaftaran_221047
+    $query = "INSERT INTO pendaftaran_221047 (id_221047, id_siswa_221047, id_kelas_221047, 
+              tanggal_daftar_221047, status_bayar_221047, status_221047, durasi_221047) 
+              VALUES ('$id_transaksi', '$id_siswa', '$id_kelas', NOW(), 'pending', 'aktif', '$durasi')";
 
-if ($result) {
+    $result = mysqli_query($koneksi, $query);
+
+    if (!$result) {
+        throw new Exception("Gagal menyimpan data pendaftaran");
+    }
+
+    // Update kuota di tabel periode_kelas_221047
+    $update_kuota_query = "UPDATE periode_kelas_221047 
+                          SET kuota_221047 = kuota_221047 - 1 
+                          WHERE id_periode_221047 = '$periode_id' 
+                          AND kuota_221047 > 0";
+
+    $update_result = mysqli_query($koneksi, $update_kuota_query);
+
+    if (!$update_result) {
+        throw new Exception("Gagal mengupdate kuota");
+    }
+
+    // Commit transaksi jika semua operasi berhasil
+    mysqli_commit($koneksi);
+
     echo "<script>
             alert('Berhasil melakukan transaksi! Tunggu Konfirmasi Admin');
             window.location.href = 'siswa/index.php?id_transaksi=$id_transaksi';
           </script>";
     exit;
-} else {
-    echo "Gagal melakukan pembelian. Silakan coba lagi.";
+
+} catch (Exception $e) {
+    // Rollback transaksi jika terjadi kesalahan
+    mysqli_rollback($koneksi);
+    echo "Gagal melakukan pembelian: " . $e->getMessage();
 }
 ?>

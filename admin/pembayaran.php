@@ -101,18 +101,18 @@ if($_SESSION['status'] != 'login'){
                 <span class="hide-menu ms-2 ps-1">Data Pembayaran</span>
               </a>
             </li>
-            <!-- <li class="sidebar-item">
+            <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link primary-hover-bg"
-                href="sistem.php"
+                href="laporan.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-primary rounded-3">
                   <i class="ti ti-file-description fs-7 text-primary"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Sistem Aplikasi</span>
+                <span class="hide-menu ms-2 ps-1">Laporan Pembayaran</span>
               </a>
-            </li> -->
+            </li>
 
           </ul>
 
@@ -368,29 +368,6 @@ if($_SESSION['status'] != 'login'){
   <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
   <script src="../assets/js/dashboard.js"></script>
 
-  <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Handler untuk tombol view-bukti
-    const viewButtons = document.querySelectorAll('.view-bukti');
-    viewButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Mengambil data dari data attributes
-            const bukti = this.getAttribute('data-bukti');
-            const siswa = this.getAttribute('data-siswa');
-            const kelas = this.getAttribute('data-kelas');
-            const total = this.getAttribute('data-total');
-            const tanggal = this.getAttribute('data-tanggal');
-
-            // Mengisi data ke dalam modal
-            document.getElementById('buktiImage').src = bukti;
-            document.getElementById('namaSiswa').textContent = siswa;
-            document.getElementById('namaKelas').textContent = kelas;
-            document.getElementById('totalPembayaran').textContent = 'Rp ' + total;
-            document.getElementById('tanggalUpload').textContent = tanggal;
-        });
-    });
-});
-</script>
 
 </body>
 

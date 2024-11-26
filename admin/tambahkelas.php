@@ -124,18 +124,18 @@ if (isset($_POST['simpan'])) {
                 <span class="hide-menu ms-2 ps-1">Data Pembayaran</span>
               </a>
             </li>
-            <!-- <li class="sidebar-item">
+            <li class="sidebar-item">
               <a
                 class="sidebar-link sidebar-link primary-hover-bg"
-                href="sistem.php"
+                href="laporan.php"
                 aria-expanded="false"
               >
                 <span class="aside-icon p-2 bg-light-primary rounded-3">
                   <i class="ti ti-file-description fs-7 text-primary"></i>
                 </span>
-                <span class="hide-menu ms-2 ps-1">Sistem Aplikasi</span>
+                <span class="hide-menu ms-2 ps-1">Laporan Pembayaran</span>
               </a>
-            </li> -->
+            </li>
 
           </ul>
 

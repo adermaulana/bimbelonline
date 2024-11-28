@@ -368,6 +368,201 @@ if($_SESSION['status'] != 'login'){
   <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
   <script src="../assets/js/dashboard.js"></script>
 
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Event delegation for view-bukti buttons
+    document.addEventListener('click', function(e) {
+        // Check if the clicked element or its parent is a view-bukti button
+        const viewBuktiButton = e.target.closest('.view-bukti');
+        if (viewBuktiButton) {
+            // Prevent default button behavior
+            e.preventDefault();
+
+            // Retrieve data attributes
+            const bukti = viewBuktiButton.getAttribute('data-bukti');
+            const siswa = viewBuktiButton.getAttribute('data-siswa');
+            const kelas = viewBuktiButton.getAttribute('data-kelas');
+            const total = viewBuktiButton.getAttribute('data-total');
+
+            // Debug logging (can be removed in production)
+            console.log('Bukti Path:', bukti);
+            console.log('Siswa:', siswa);
+            console.log('Kelas:', kelas);
+            console.log('Total:', total);
+
+            // Update modal elements
+            const buktiImage = document.getElementById('buktiImage');
+            const namaSiswa = document.getElementById('namaSiswa');
+            const namaKelas = document.getElementById('namaKelas');
+            const totalPembayaran = document.getElementById('totalPembayaran');
+
+            // Safely update elements with fallback
+            buktiImage.src = bukti || '';
+            buktiImage.onerror = function() {
+                console.error('Failed to load image:', bukti);
+                this.alt = 'Gambar bukti tidak ditemukan';
+            };
+
+            namaSiswa.textContent = siswa || 'Tidak tersedia';
+            namaKelas.textContent = kelas || 'Tidak tersedia';
+            totalPembayaran.textContent = total ? `Rp ${total}` : 'Tidak tersedia';
+
+            // Optional: Add current date as upload date
+            const tanggalUpload = document.getElementById('tanggalUpload');
+            if (tanggalUpload) {
+                tanggalUpload.textContent = new Date().toLocaleDateString('id-ID');
+            }
+        }
+    });
+
+    // Handle form submission for filtering
+    const filterForm = document.getElementById('filterForm');
+    if (filterForm) {
+        filterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            loadData();
+        });
+    }
+
+    // Handle PDF export
+    const exportPDFButton = document.getElementById('exportPDF');
+    if (exportPDFButton) {
+        exportPDFButton.addEventListener('click', function() {
+            const form = document.getElementById('filterForm');
+            const formData = new FormData(form);
+            const queryString = new URLSearchParams(formData).toString();
+            window.open(`cetak_pdf.php?${queryString}`, '_blank');
+        });
+    }
+
+    function loadData() {
+        const form = document.getElementById('filterForm');
+        const formData = new FormData(form);
+        const queryString = new URLSearchParams(formData).toString();
+
+        fetch(`filter.php?${queryString}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tbody = document.querySelector('tbody');
+                tbody.innerHTML = '';
+
+                if (data.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="text-center">Tidak ada data yang ditemukan</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                data.forEach((item, index) => {
+                    // Price calculation logic (same as previous implementation)
+                    let hargaPerBulan = parseFloat(item.harga_221047);
+                    let hargaTotal;
+                    
+                    if (item.durasi_221047 == 12) {
+                        hargaTotal = hargaPerBulan * 12 * 0.9;
+                    } else if (item.durasi_221047 == 6) {
+                        hargaTotal = hargaPerBulan * 6 * 0.95;
+                    } else {
+                        hargaTotal = hargaPerBulan;
+                    }
+
+                    const row = `
+                        <tr>
+                            <td>
+                                <p class="fs-3 fw-normal mb-0">${index + 1}</p>
+                            </td>
+                            <td>
+                                <p class="fs-3 fw-normal mb-0">${item.nama_siswa || 'Tidak diketahui'}</p>
+                            </td>
+                            <td>
+                                <p class="fs-3 fw-normal mb-0">
+                                    ${item.nama_kelas_221047 || 'Tidak diketahui'}
+                                    <br>
+                                    <small class="text-muted">Rp ${hargaTotal.toLocaleString()}</small>
+                                </p>
+                            </td>
+                            <td>
+                                <p class="fs-3 fw-normal mb-0">${item.durasi_221047 || '-'} Bulan</p>
+                            </td>
+                            <td>
+                                <p class="fs-3 fw-normal mb-0">
+                                    ${item.tanggal_daftar_221047 ? new Date(item.tanggal_daftar_221047).toLocaleDateString('id-ID') : 'Tidak tersedia'}
+                                </p>
+                            </td>
+                            <td>
+                                <span class="badge bg-${item.status_bayar_221047 === 'lunas' ? 'success' : 'warning'}">
+                                    ${item.status_bayar_221047 ? item.status_bayar_221047.charAt(0).toUpperCase() + item.status_bayar_221047.slice(1) : 'Tidak diketahui'}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-${item.status_221047 === 'aktif' ? 'success' : 'danger'}">
+                                    ${item.status_221047 ? item.status_221047.charAt(0).toUpperCase() + item.status_221047.slice(1) : 'Tidak diketahui'}
+                                </span>
+                            </td>
+                            <td>
+                                ${item.status_bayar_221047 === 'pending' && item.bukti_pembayaran_221047 ? `
+                                    <button type="button" class="btn btn-sm btn-primary view-bukti" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#buktiModal"
+                                        data-id="${item.id_221047 || ''}"
+                                        data-siswa="${item.nama_siswa || ''}"
+                                        data-kelas="${item.nama_kelas_221047 || ''}"
+                                        data-total="${hargaTotal.toLocaleString()}"
+                                        data-bukti="../siswa/uploads/bukti_pembayaran/${item.bukti_pembayaran_221047}">
+                                        Lihat Bukti
+                                    </button>
+                                    <a onclick="return confirm('Apakah anda yakin ingin mengkonfirmasi pembayaran ini?')" 
+                                        class="btn btn-sm btn-success" 
+                                        href="verifikasi.php?id=${item.id_221047 || ''}">
+                                        Verifikasi
+                                    </a>
+                                ` : ''}
+                                ${item.status_bayar_221047 === 'lunas' && item.bukti_pembayaran_221047 ? `
+                                    <button type="button" class="btn btn-sm btn-info view-bukti" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#buktiModal"
+                                        data-id="${item.id_221047 || ''}"
+                                        data-siswa="${item.nama_siswa || ''}"
+                                        data-kelas="${item.nama_kelas_221047 || ''}"
+                                        data-total="${hargaTotal.toLocaleString()}"
+                                        data-bukti="../siswa/uploads/bukti_pembayaran/${item.bukti_pembayaran_221047}">
+                                        Lihat Bukti
+                                    </button>
+                                ` : ''}
+                                <a class="btn btn-sm btn-info" href="detail.php?id=${item.id_221047 || ''}">
+                                    Detail
+                                </a>
+                                <a class="btn btn-sm btn-danger" href="hapus.php?id=${item.id_221047 || ''}" 
+                                    onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">
+                                    Hapus
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                const tbody = document.querySelector('tbody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center text-danger">
+                            Gagal memuat data. Silakan coba lagi.
+                        </td>
+                    </tr>
+                `;
+            });
+    }
+});
+</script> 
 
 </body>
 

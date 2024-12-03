@@ -117,6 +117,11 @@ if (!empty($_GET['status_aktif'])) {
     $where .= " AND p.status_221047 = '$status_aktif'";
 }
 
+if (!empty($_GET['nama_kelas'])) {
+    $nama_kelas = $_GET['nama_kelas'];
+    $where .= " AND k.nama_kelas_221047 = '$nama_kelas'";
+}
+
 // Fetch payment data
 $query = "SELECT 
     p.*,

@@ -203,10 +203,24 @@ if($_SESSION['status'] != 'login'){
                                     </select>
                                 </div>
                                 <div class="col-md-2">
+                                    <label class="form-label">Nama Kelas</label>
+                                    <select class="form-select" name="nama_kelas" id="nama_kelas">
+                                        <option value="">Semua Kelas</option>
+                                        <?php
+                                        // Fetch unique class names from the database
+                                        $kelas_query = mysqli_query($koneksi, "SELECT DISTINCT nama_kelas_221047 FROM kelas_221047 ORDER BY nama_kelas_221047");
+                                        while($kelas = mysqli_fetch_array($kelas_query)):
+                                        ?>
+                                        <option value="<?= $kelas['nama_kelas_221047'] ?>"><?= $kelas['nama_kelas_221047'] ?></option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
                                     <label class="form-label">&nbsp;</label>
-                                    <div>
+                                    <div class="d-flex align-items-center gap-2">
                                         <button type="submit" class="btn btn-primary me-2">Filter</button>
-                                        <button type="button" class="btn btn-success" id="exportPDF">Export PDF</button>
+                                        <button type="button" class="btn btn-danger" id="exportPDF">PDF</button>
+                                        <a href="laporan.php" class="btn btn-secondary">Reset</a>
                                     </div>
                                 </div>
                             </form>
@@ -478,29 +492,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadData() {
-        const form = document.getElementById('filterForm');
-        const formData = new FormData(form);
-        const queryString = new URLSearchParams(formData).toString();
+    const form = document.getElementById('filterForm');
+    const formData = new FormData(form);
+    const queryString = new URLSearchParams(formData).toString();
 
-        fetch(`filter.php?${queryString}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const tbody = document.querySelector('tbody');
-                tbody.innerHTML = '';
+    fetch(`filter.php?${queryString}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
 
-                if (data.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="8" class="text-center">Tidak ada data yang ditemukan</td>
-                        </tr>
-                    `;
-                    return;
-                }
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center">Tidak ada data yang ditemukan</td>
+                    </tr>
+                `;
+                return;
+            }
 
                 data.forEach((item, index) => {
                     // Price calculation logic (same as previous implementation)
@@ -592,17 +606,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             })
             .catch(error => {
-                console.error('Error fetching data:', error);
-                const tbody = document.querySelector('tbody');
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="8" class="text-center text-danger">
-                            Gagal memuat data. Silakan coba lagi.
-                        </td>
-                    </tr>
-                `;
-            });
-    }
+                  console.error('Error fetching data:', error);
+                  const tbody = document.querySelector('tbody');
+                  tbody.innerHTML = `
+                      <tr>
+                          <td colspan="8" class="text-center text-danger">
+                              Gagal memuat data. Silakan coba lagi.
+                          </td>
+                      </tr>
+                  `;
+              });
+      }
 });
 </script>
 
